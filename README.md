@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/logo.svg" alt="mh-gdpr-ai.eu" width="100%">
+<img src="docs/assets/logo.svg" alt="mh-gdpr-ai.eu" width="75%">
 
 <br><br>
 
