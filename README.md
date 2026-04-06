@@ -593,7 +593,7 @@ This open-source library is the core of a **fully managed AI infrastructure plat
 | **Alibaba** | qwen2-72b, qwen2-7b | No |
 | **Microsoft** | phi-3-medium, phi-3-mini | No |
 
-> **Interested in the managed service?** [Join the waitlist](docs/landing/index.html) or reach out at **mahadillah@mh-gdpr-ai.eu**
+> **Interested in the managed service?** Join the waitlist or reach out at **[mahadillah@mh-gdpr-ai.eu](mailto:mahadillah@mh-gdpr-ai.eu)**
 
 <br>
 
