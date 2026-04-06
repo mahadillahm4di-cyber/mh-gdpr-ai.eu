@@ -1,40 +1,41 @@
-<p align="center">
-  <img src="docs/assets/logo.svg" alt="mh-gdpr-ai.eu" width="200">
-</p>
+<div align="center">
 
-<h1 align="center">mh-gdpr-ai.eu</h1>
+<img src="docs/assets/logo.svg" alt="mh-gdpr-ai.eu" width="75%">
 
-<p align="center">
-  <strong>GDPR-compliant LLM routing with real-time PII detection</strong>
-</p>
+<br><br>
 
-<p align="center">
-  <a href="#quick-start">Quick Start</a> &bull;
-  <a href="#how-it-works">How It Works</a> &bull;
-  <a href="#features">Features</a> &bull;
-  <a href="#examples">Examples</a> &bull;
-  <a href="#api-reference">API Reference</a> &bull;
-  <a href="#contributing">Contributing</a>
-</p>
+**GDPR-compliant LLM routing with real-time PII detection**
 
-<p align="center">
-  <a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/actions"><img src="https://img.shields.io/github/actions/workflow/status/mahadillahm4di-cyber/mh-gdpr-ai.eu/ci.yml?branch=master&style=flat-square&label=tests" alt="Tests"></a>
-  <a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/v/mh-gdpr-ai?style=flat-square&color=blue" alt="PyPI"></a>
-  <a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/pyversions/mh-gdpr-ai?style=flat-square" alt="Python"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green?style=flat-square" alt="License"></a>
-  <a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/stargazers"><img src="https://img.shields.io/github/stars/mahadillahm4di-cyber/mh-gdpr-ai.eu?style=flat-square" alt="Stars"></a>
-</p>
+<em>Your AI calls cross the Atlantic. Your users' data shouldn't.</em>
 
----
+<br>
 
-> **Your AI calls cross the Atlantic. Your users' data shouldn't.**
->
+<a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/stargazers"><img src="https://img.shields.io/github/stars/mahadillahm4di-cyber/mh-gdpr-ai.eu?style=flat-square&color=DAA520" alt="Stars"></a>
+<a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/actions"><img src="https://img.shields.io/github/actions/workflow/status/mahadillahm4di-cyber/mh-gdpr-ai.eu/ci.yml?branch=master&style=flat-square&label=tests" alt="Tests"></a>
+<a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/v/mh-gdpr-ai?style=flat-square&color=blue" alt="PyPI"></a>
+<a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/pyversions/mh-gdpr-ai?style=flat-square" alt="Python"></a>
+<a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green?style=flat-square" alt="License"></a>
+
+<br>
+
+<a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/dm/mh-gdpr-ai?style=flat-square&label=downloads&color=purple" alt="Downloads"></a>
+<a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/issues"><img src="https://img.shields.io/github/issues/mahadillahm4di-cyber/mh-gdpr-ai.eu?style=flat-square" alt="Issues"></a>
+<a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/network/members"><img src="https://img.shields.io/github/forks/mahadillahm4di-cyber/mh-gdpr-ai.eu?style=flat-square" alt="Forks"></a>
+
+<br><br>
+
+[Quick Start](#quick-start) &bull; [How It Works](#how-it-works) &bull; [Features](#features) &bull; [Examples](#examples) &bull; [API Reference](#api-reference) &bull; [Contributing](#contributing)
+
+</div>
+
+<br>
+
 > If your LLM prompt contains a name, email, or IBAN — and it hits a US server — that's a GDPR violation.
 > Max fine: **4% of global revenue or 20M EUR**.
 >
 > This gateway fixes that in **3 lines of code**.
 
----
+<br>
 
 ## The Problem
 
@@ -66,7 +67,7 @@ Your EU User  -->  Your App  -->  Sovereign Gateway  -->  PII detected?
                                   30-40% cheaper than option B
 ```
 
----
+<br>
 
 ## Quick Start
 
@@ -111,7 +112,7 @@ $ python examples/basic_routing.py
   GDPR compliant:   True
 ```
 
----
+<br>
 
 ## How It Works
 
@@ -170,11 +171,13 @@ The gateway runs a **3-filter pipeline** on every request in under 50ms:
 
 Both layers run on every request. If Presidio misses something, regex catches it. If Presidio isn't installed, regex handles everything.
 
----
+<br>
 
 ## Features
 
 ### PII Detection (15+ Entity Types)
+
+<div align="center">
 
 | Entity Type | Example | Detection |
 |-------------|---------|-----------|
@@ -194,12 +197,18 @@ Both layers run on every request. If Presidio misses something, regex catches it
 | `UK_NHS` | 943 476 5919 | Presidio |
 | `US_PASSPORT` | 123456789 | Presidio |
 
+</div>
+
 ### Sovereign Routing
+
+<div align="center">
 
 | Condition | Routing | Providers | Model |
 |-----------|---------|-----------|-------|
 | PII detected | **EU ONLY** | Scaleway, OVHCloud | EU-safe (Mistral, Llama, Gemma) |
 | No PII | **CHEAPEST** | Any provider | Any model |
+
+</div>
 
 ### PII Masking
 
@@ -231,7 +240,7 @@ print(result.compliance_summary)
 # }
 ```
 
----
+<br>
 
 ## Examples
 
@@ -304,23 +313,16 @@ python examples/basic_routing.py
 python examples/pii_detection.py
 ```
 
----
+<br>
 
 ## Installation Options
 
-```bash
-# Core (regex-only PII detection)
-pip install mh-gdpr-ai
-
-# With Presidio NLP (recommended for production)
-pip install mh-gdpr-ai[presidio]
-
-# With FastAPI support
-pip install mh-gdpr-ai[api]
-
-# Everything
-pip install mh-gdpr-ai[all]
-```
+| Installation | Command | Use Case |
+|---|---|---|
+| **Core** (regex-only) | `pip install mh-gdpr-ai` | Quick start, minimal deps |
+| **With Presidio** (recommended) | `pip install mh-gdpr-ai[presidio]` | Production, NLP detection |
+| **With FastAPI** | `pip install mh-gdpr-ai[api]` | API server |
+| **Everything** | `pip install mh-gdpr-ai[all]` | Full installation |
 
 ### With Presidio (Recommended)
 
@@ -339,7 +341,7 @@ gateway = SovereignGateway()  # uses Presidio + regex
 gateway = SovereignGateway(use_presidio=False)
 ```
 
----
+<br>
 
 ## API Reference
 
@@ -385,11 +387,13 @@ The main entry point.
 | `detect(text)` | Detect types (no mask) | `list[str]` |
 | `mask_messages(messages)` | Mask across messages | `(list[dict], list[str])` |
 
----
+<br>
 
 ## Supported Models
 
 ### EU-Safe Models (used when PII detected)
+
+<div align="center">
 
 | Model | Family | Use Case |
 |-------|--------|----------|
@@ -401,11 +405,11 @@ The main entry point.
 | `llama-3-8b` | Meta | Fast, efficient |
 | `gemma-7b` | Google | Lightweight |
 
-### All Supported Models
+</div>
 
-The gateway supports 20+ models across 9 families: Mistral, OpenAI, Anthropic, Meta, Google, Cohere, Microsoft, DeepSeek, and Alibaba.
+The gateway supports **20+ models** across **9 families**: Mistral, OpenAI, Anthropic, Meta, Google, Cohere, Microsoft, DeepSeek, and Alibaba.
 
----
+<br>
 
 ## Architecture
 
@@ -433,16 +437,26 @@ mh-gdpr-ai.eu/
 └── Makefile                    # Dev commands
 ```
 
----
+<br>
 
 ## Development
+
+### Prerequisites
+
+| Tool | Version | Check |
+|------|---------|-------|
+| Python | >= 3.10 | `python --version` |
+| pip | latest | `pip --version` |
+| Git | any | `git --version` |
+
+### Setup
 
 ```bash
 git clone https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu.git
 cd mh-gdpr-ai.eu
 
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
 
 pip install -e ".[dev]"
 
@@ -456,7 +470,7 @@ make lint
 make examples
 ```
 
----
+<br>
 
 ## Why This Exists
 
@@ -466,7 +480,7 @@ GDPR Article 44 requires that personal data of EU residents stays within the EEA
 
 This gateway ensures that never happens, automatically.
 
----
+<br>
 
 ## Roadmap
 
@@ -475,28 +489,46 @@ This gateway ensures that never happens, automatically.
 - [x] Sovereign routing engine
 - [x] PII masking
 - [x] Compliance audit summaries
+- [x] PyPI package published
+- [x] CI/CD with automated PyPI publish
 - [ ] Semantic cache integration
 - [ ] LiteLLM provider integration
 - [ ] Real-time dashboard
 - [ ] GDPR compliance report generation (PDF)
 - [ ] OpenAI SDK drop-in replacement
 
----
+<br>
 
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE) for details.
 
----
-
 ## Contributing
 
 Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
+## Security
+
+Found a vulnerability? See [SECURITY.md](SECURITY.md) for responsible disclosure.
+
+<br>
+
+<div align="center">
+
 ---
 
-<p align="center">
-  <strong>Built for teams who take data privacy seriously.</strong>
-  <br>
-  <sub>Star this repo if you think GDPR compliance shouldn't be an afterthought.</sub>
-</p>
+**Built for teams who take data privacy seriously.**
+
+Star this repo if you think GDPR compliance shouldn't be an afterthought.
+
+<br>
+
+<a href="https://star-history.com/#mahadillahm4di-cyber/mh-gdpr-ai.eu&Date">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=mahadillahm4di-cyber/mh-gdpr-ai.eu&type=Date&theme=dark" />
+    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=mahadillahm4di-cyber/mh-gdpr-ai.eu&type=Date" />
+    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=mahadillahm4di-cyber/mh-gdpr-ai.eu&type=Date" width="75%" />
+  </picture>
+</a>
+
+</div>
