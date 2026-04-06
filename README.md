@@ -518,6 +518,85 @@ This gateway ensures that never happens, automatically.
 
 <br>
 
+## Platform Architecture
+
+This open-source library is the core of a **fully managed AI infrastructure platform**. The managed service adds enterprise features on top of the library.
+
+```
+                          ┌──────────────────────────────────┐
+                          │         Your Application          │
+                          │   (2 lines to integrate SDK)      │
+                          └──────────────┬───────────────────┘
+                                         │
+                                         ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                        API Gateway (Go)                             │
+│   Auth · Rate Limiting · DDoS Protection · Request Routing          │
+└────────────────────────────┬────────────────────────────────────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+   │ Auth Service  │ │Router Engine │ │   Billing    │
+   │    (Go)       │ │  (Python)    │ │  Service     │
+   │              │ │              │ │    (Go)      │
+   │ JWT · API    │ │ PII Detect   │ │ Usage Track  │
+   │ Keys · RBAC  │ │ EU Routing   │ │ Stripe       │
+   │ Multi-tenant │ │ Model Select │ │ Invoices     │
+   └──────────────┘ │ Cache Layer  │ └──────────────┘
+                    └──────┬───────┘
+                           │
+            ┌──────────────┼──────────────┐
+            ▼              ▼              ▼
+   ┌──────────────┐ ┌──────────────┐ ┌──────────────┐
+   │  Scaleway    │ │  OVHCloud    │ │  RunPod /    │
+   │  Paris (EU)  │ │  FR (EU)     │ │  Together /  │
+   │              │ │              │ │  Lambda      │
+   │  Priority 1  │ │  Priority 2  │ │  Fallback    │
+   └──────────────┘ └──────────────┘ └──────────────┘
+```
+
+### Open Source (this repo)
+
+| Component | What it does |
+|-----------|-------------|
+| **PII Detection** | Dual-layer: Presidio NLP + regex fallback, 15+ entity types |
+| **Sovereign Routing** | PII detected → EU only, no PII → cheapest provider |
+| **PII Masking** | Type-specific placeholders (email, phone, IBAN, SSN...) |
+| **Python SDK** | OpenAI-compatible client, circuit breaker, retry, cost tracking |
+| **TypeScript SDK** | Same features, same API, for Node.js/Deno/Bun |
+
+### Managed Service (coming soon)
+
+| Component | What it does | Why it matters |
+|-----------|-------------|----------------|
+| **API Gateway** | Auth, rate limiting, DDoS protection | Zero infrastructure for clients |
+| **Auth Service** | JWT, API keys, multi-tenant isolation | Each client is sandboxed |
+| **Router Engine** | Semantic cache, model selection, fallback chain | 30-70% cost savings |
+| **Billing Service** | Usage tracking, Stripe integration, invoices | Pay-per-use, no subscription |
+| **Real-Time Dashboard** | Cost savings, RGPD compliance score, latency | Clients see savings grow daily |
+| **GDPR Compliance Reports** | Auto-generated PDF for DPO/regulators | Unblocks sales in regulated sectors |
+| **Monitoring** | Prometheus, Grafana, Loki | Full observability, zero PII in logs |
+| **Deployment** | Helm charts, Terraform, Kubernetes | Production-ready, auto-scaling |
+
+### Supported Models (24 models, 9 families)
+
+| Family | Models | EU Safe |
+|--------|--------|---------|
+| **Mistral** | mistral-7b, mixtral-8x7b, codestral, mistral-large, mistral-embed | Yes |
+| **Meta/Llama** | llama-3-70b, llama-3-8b, codellama-34b | Yes |
+| **Google** | gemma-7b, gemini-pro | Partial |
+| **OpenAI** | gpt-4o, gpt-4-turbo, gpt-3.5-turbo | No |
+| **Anthropic** | claude-3-opus, claude-3-sonnet, claude-3-haiku | No |
+| **Cohere** | command-r-plus, command-r | No |
+| **DeepSeek** | deepseek-v2, deepseek-coder | No |
+| **Alibaba** | qwen2-72b, qwen2-7b | No |
+| **Microsoft** | phi-3-medium, phi-3-mini | No |
+
+> **Interested in the managed service?** [Join the waitlist](docs/landing/index.html) or reach out at **mahadillah@mh-gdpr-ai.eu**
+
+<br>
+
 ## License
 
 Apache License 2.0 — see [LICENSE](LICENSE) for details.
