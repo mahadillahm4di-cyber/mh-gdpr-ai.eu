@@ -18,11 +18,11 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/mh-gdpr-ai/mh-gdpr-ai.eu/actions"><img src="https://img.shields.io/github/actions/workflow/status/mh-gdpr-ai/mh-gdpr-ai.eu/ci.yml?style=flat-square&label=tests" alt="Tests"></a>
+  <a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/actions"><img src="https://img.shields.io/github/actions/workflow/status/mahadillahm4di-cyber/mh-gdpr-ai.eu/ci.yml?branch=master&style=flat-square&label=tests" alt="Tests"></a>
   <a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/v/mh-gdpr-ai?style=flat-square&color=blue" alt="PyPI"></a>
   <a href="https://pypi.org/project/mh-gdpr-ai/"><img src="https://img.shields.io/pypi/pyversions/mh-gdpr-ai?style=flat-square" alt="Python"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-green?style=flat-square" alt="License"></a>
-  <a href="https://github.com/mh-gdpr-ai/mh-gdpr-ai.eu/stargazers"><img src="https://img.shields.io/github/stars/mh-gdpr-ai/mh-gdpr-ai.eu?style=flat-square" alt="Stars"></a>
+  <a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu/stargazers"><img src="https://img.shields.io/github/stars/mahadillahm4di-cyber/mh-gdpr-ai.eu?style=flat-square" alt="Stars"></a>
 </p>
 
 ---
@@ -419,7 +419,7 @@ mh-gdpr-ai.eu/
 ## Development
 
 ```bash
-git clone https://github.com/mh-gdpr-ai/mh-gdpr-ai.eu.git
+git clone https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu.git
 cd mh-gdpr-ai.eu
 
 python -m venv .venv

@@ -6,7 +6,7 @@ Run: uvicorn examples.fastapi_integration:app --reload
 Requires: pip install fastapi uvicorn
 """
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 from pydantic import BaseModel
 
 from sovereign_gateway import SovereignGateway

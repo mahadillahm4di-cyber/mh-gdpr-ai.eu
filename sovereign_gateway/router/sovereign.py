@@ -13,7 +13,7 @@ When no PII is present, the cheapest available provider is selected.
 from __future__ import annotations
 
 import time
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import structlog
 

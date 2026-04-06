@@ -7,12 +7,9 @@ No raw dicts — every boundary uses a typed Pydantic model.
 from __future__ import annotations
 
 import enum
-import uuid
-from datetime import datetime
 from typing import Any
 
-from pydantic import BaseModel, Field, field_validator
-
+from pydantic import BaseModel, Field
 
 # ---------------------------------------------------------------------------
 # Enums
