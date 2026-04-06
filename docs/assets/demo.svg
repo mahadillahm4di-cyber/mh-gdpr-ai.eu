@@ -1,0 +1,103 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 520" width="880" height="520">
+  <!-- Terminal window -->
+  <rect width="880" height="520" rx="12" fill="#1e1e2e"/>
+
+  <!-- Title bar -->
+  <rect width="880" height="40" rx="12" fill="#313244"/>
+  <rect x="0" y="28" width="880" height="12" fill="#313244"/>
+
+  <!-- Window dots -->
+  <circle cx="24" cy="20" r="7" fill="#f38ba8"/>
+  <circle cx="46" cy="20" r="7" fill="#f9e2af"/>
+  <circle cx="68" cy="20" r="7" fill="#a6e3a1"/>
+
+  <!-- Title text -->
+  <text x="440" y="25" font-family="monospace" font-size="13" fill="#cdd6f4" text-anchor="middle">python examples/basic_routing.py</text>
+
+  <!-- Terminal content -->
+  <g transform="translate(24, 60)">
+    <!-- Prompt line -->
+    <text y="0" font-family="monospace" font-size="14">
+      <tspan fill="#a6e3a1">$</tspan>
+      <tspan fill="#cdd6f4"> python examples/basic_routing.py</tspan>
+    </text>
+
+    <!-- Blank line -->
+    <!-- Example 1 header -->
+    <text y="36" font-family="monospace" font-size="14" fill="#89b4fa" font-weight="bold">Example 1: PII Detected — EU Routing Forced</text>
+
+    <!-- Input -->
+    <text y="60" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">Input:</tspan>
+      <tspan fill="#cdd6f4"> "Analyze the account of </tspan>
+      <tspan fill="#f38ba8" font-weight="bold">jean.dupont@company.fr</tspan>
+      <tspan fill="#cdd6f4">"</tspan>
+    </text>
+
+    <!-- Results -->
+    <text y="90" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  PII detected:     </tspan>
+      <tspan fill="#a6e3a1" font-weight="bold">True</tspan>
+    </text>
+    <text y="112" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  PII types:        </tspan>
+      <tspan fill="#f9e2af">['EMAIL_ADDRESS']</tspan>
+    </text>
+    <text y="134" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  Routing:          </tspan>
+      <tspan fill="#f38ba8" font-weight="bold">EU ONLY</tspan>
+      <tspan fill="#6c7086"> (forced)</tspan>
+    </text>
+    <text y="156" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  Provider:         </tspan>
+      <tspan fill="#89b4fa">scaleway</tspan>
+      <tspan fill="#6c7086"> (Paris, EU)</tspan>
+    </text>
+    <text y="178" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  GDPR compliant:   </tspan>
+      <tspan fill="#a6e3a1" font-weight="bold">True</tspan>
+    </text>
+    <text y="200" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  Latency:          </tspan>
+      <tspan fill="#cdd6f4">0.6ms</tspan>
+    </text>
+
+    <!-- Separator -->
+    <text y="232" font-family="monospace" font-size="13" fill="#45475a">  ─────────────────────────────────────────────</text>
+
+    <!-- Example 2 header -->
+    <text y="260" font-family="monospace" font-size="14" fill="#89b4fa" font-weight="bold">Example 2: No PII — Cheapest Provider</text>
+
+    <!-- Input -->
+    <text y="284" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">Input:</tspan>
+      <tspan fill="#cdd6f4"> "Summarize this quarterly report"</tspan>
+    </text>
+
+    <!-- Results -->
+    <text y="314" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  PII detected:     </tspan>
+      <tspan fill="#fab387">False</tspan>
+    </text>
+    <text y="336" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  PII types:        </tspan>
+      <tspan fill="#6c7086">[]</tspan>
+    </text>
+    <text y="358" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  Routing:          </tspan>
+      <tspan fill="#a6e3a1" font-weight="bold">CHEAPEST</tspan>
+    </text>
+    <text y="380" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  Provider:         </tspan>
+      <tspan fill="#89b4fa">any available</tspan>
+    </text>
+    <text y="402" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  GDPR compliant:   </tspan>
+      <tspan fill="#a6e3a1" font-weight="bold">True</tspan>
+    </text>
+    <text y="424" font-family="monospace" font-size="13">
+      <tspan fill="#6c7086">  Latency:          </tspan>
+      <tspan fill="#cdd6f4">0.02ms</tspan>
+    </text>
+  </g>
+</svg>

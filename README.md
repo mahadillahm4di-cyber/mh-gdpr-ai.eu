@@ -95,22 +95,9 @@ That's it. PII detected = EU only. No PII = cheapest provider.
 
 ### See It In Action
 
-```
-$ python examples/basic_routing.py
-
-[PII DETECTED] "Analyze the account of jean.dupont@company.fr"
-  PII found:        True
-  PII types:        ['EMAIL_ADDRESS']
-  Routing:          EU ONLY (forced)
-  Provider:         scaleway (Paris, EU)
-  GDPR compliant:   True
-
-[NO PII] "Summarize this quarterly report"
-  PII found:        False
-  Routing:          CHEAPEST
-  Provider:         scaleway
-  GDPR compliant:   True
-```
+<div align="center">
+<img src="docs/assets/demo.svg" alt="Demo" width="100%">
+</div>
 
 <br>
 
