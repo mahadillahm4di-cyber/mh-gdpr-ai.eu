@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mh-gdpr-ai.eu — GDPR-Compliant AI Routing</title>
+  <meta name="description" content="Open-source AI gateway that detects PII and forces EU-only routing. GDPR compliance in 2 lines of code.">
+
+  <!-- Security headers via meta -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="X-Frame-Options" content="DENY">
+
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --surface: #12121a;
+      --border: #1e1e2e;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+      --accent: #60a5fa;
+      --accent-glow: rgba(96, 165, 250, 0.15);
+      --green: #4ade80;
+      --red: #f87171;
+      --yellow: #fbbf24;
+      --eu-blue: #003399;
+      --eu-gold: #ffcc00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Nav */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 15, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .nav-brand {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      margin-left: 2rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-links .gh-star {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      transition: border-color 0.2s;
+    }
+
+    .nav-links .gh-star:hover { border-color: var(--accent); }
+
+    /* Hero */
+    .hero {
+      padding: 10rem 2rem 6rem;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge-eu {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--eu-blue);
+      border-radius: 999px;
+      font-size: 0.8rem;
+      color: var(--eu-gold);
+      background: rgba(0, 51, 153, 0.15);
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    h1 .highlight {
+      background: linear-gradient(135deg, var(--accent), #a78bfa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 3rem;
+    }
+
+    /* Waitlist form */
+    .waitlist-form {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 480px;
+      margin: 0 auto 1rem;
+    }
+
+    .waitlist-form input {
+      flex: 1;
+      padding: 0.85rem 1.2rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--text);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .waitlist-form input:focus {
+      border-color: var(--accent);
+    }
+
+    .waitlist-form input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .waitlist-form button {
+      padding: 0.85rem 1.8rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--accent);
+      color: #000;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .waitlist-form button:hover { opacity: 0.9; }
+
+    .waitlist-note {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .waitlist-success {
+      display: none;
+      padding: 1rem;
+      border: 1px solid var(--green);
+      border-radius: 8px;
+      background: rgba(74, 222, 128, 0.1);
+      color: var(--green);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Terminal demo */
+    .demo-section {
+      padding: 4rem 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .terminal {
+      background: #1e1e2e;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #313244;
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #f38ba8; }
+    .terminal-dot.yellow { background: #f9e2af; }
+    .terminal-dot.green { background: #a6e3a1; }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #cdd6f4;
+    }
+
+    .terminal-body {
+      padding: 1.5rem;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .t-prompt { color: #a6e3a1; }
+    .t-cmd { color: #cdd6f4; }
+    .t-header { color: #89b4fa; font-weight: bold; }
+    .t-label { color: #6c7086; }
+    .t-pii { color: #f38ba8; font-weight: bold; }
+    .t-safe { color: #a6e3a1; font-weight: bold; }
+    .t-value { color: #f9e2af; }
+    .t-provider { color: #89b4fa; }
+    .t-cost { color: #fab387; font-weight: bold; }
+    .t-sep { color: #45475a; }
+
+    /* Features */
+    .features {
+      padding: 6rem 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .features h2 {
+      text-align: center;
+      font-size: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .feature-card {
+      padding: 2rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: var(--accent); }
+
+    .feature-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .feature-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Code snippet */
+    .code-section {
+      padding: 4rem 2rem;
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .code-section h2 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .code-section .subtitle {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .code-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      text-align: left;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .code-block .comment { color: #6c7086; }
+    .code-block .keyword { color: #cba6f7; }
+    .code-block .string { color: #a6e3a1; }
+    .code-block .func { color: #89b4fa; }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 4rem;
+      padding: 3rem 2rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* CTA bottom */
+    .cta-bottom {
+      padding: 6rem 2rem;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .cta-bottom h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-bottom p {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2rem;
+      text-align: center;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      h1 { font-size: 2.2rem; }
+      .hero { padding-top: 7rem; }
+      .waitlist-form { flex-direction: column; }
+      .stats { gap: 2rem; flex-wrap: wrap; }
+      .nav-links a:not(.gh-star) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">mh-gdpr-ai.eu</a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#demo">Demo</a>
+    <a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu" class="gh-star" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+      Star
+    </a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="badge-eu">
+    <svg width="20" height="14" viewBox="0 0 20 14"><rect width="20" height="14" rx="2" fill="#003399"/><circle cx="10" cy="7" r="4" fill="none" stroke="#FFCC00" stroke-width="0.8"/><g fill="#FFCC00"><polygon points="10,2.5 10.3,3.4 11.2,3.4 10.5,3.9 10.7,4.8 10,4.3 9.3,4.8 9.5,3.9 8.8,3.4 9.7,3.4" transform="scale(0.5) translate(10,1)"/></g></svg>
+    EU Sovereign AI
+  </div>
+
+  <h1>
+    Your AI processes PII.<br>
+    <span class="highlight">Does it stay in Europe?</span>
+  </h1>
+
+  <p>
+    Open-source gateway that detects personal data in LLM requests
+    and automatically routes to EU providers. GDPR compliance in 2 lines of code.
+  </p>
+
+  <form class="waitlist-form" id="waitlistForm">
+    <input type="email" id="emailInput" placeholder="you@company.com" required autocomplete="email">
+    <button type="submit">Join Waitlist</button>
+  </form>
+  <p class="waitlist-note">Free for open-source. No spam. Unsubscribe anytime.</p>
+
+  <div class="waitlist-success" id="waitlistSuccess">
+    You're on the list. We'll notify you when the managed service launches.
+  </div>
+</section>
+
+<!-- Stats -->
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-number">15+</div>
+    <div class="stat-label">PII entity types</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">24</div>
+    <div class="stat-label">AI models supported</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">0.6ms</div>
+    <div class="stat-label">Detection latency</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-number">100%</div>
+    <div class="stat-label">EU routing compliance</div>
+  </div>
+</div>
+
+<!-- Demo -->
+<section class="demo-section" id="demo">
+  <div class="terminal">
+    <div class="terminal-bar">
+      <div class="terminal-dot red"></div>
+      <div class="terminal-dot yellow"></div>
+      <div class="terminal-dot green"></div>
+      <div class="terminal-title">python examples/basic_routing.py</div>
+    </div>
+    <div class="terminal-body">
+      <div><span class="t-prompt">$</span> <span class="t-cmd">python examples/basic_routing.py</span></div>
+      <br>
+      <div class="t-header">Example 1: PII Detected &mdash; EU Routing Forced</div>
+      <div><span class="t-label">Input:</span> <span class="t-cmd">"Analyze the account of </span><span class="t-pii">jean.dupont@company.fr</span><span class="t-cmd">"</span></div>
+      <div><span class="t-label">  PII detected:     </span><span class="t-pii">True</span></div>
+      <div><span class="t-label">  PII types:        </span><span class="t-value">['EMAIL_ADDRESS']</span></div>
+      <div><span class="t-label">  Routing:          </span><span class="t-pii">EU ONLY</span> <span class="t-label">(forced)</span></div>
+      <div><span class="t-label">  Provider:         </span><span class="t-provider">scaleway</span> <span class="t-label">(Paris, EU)</span></div>
+      <div><span class="t-label">  GDPR compliant:   </span><span class="t-safe">True</span></div>
+      <br>
+      <div class="t-sep">  &mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;</div>
+      <br>
+      <div class="t-header">Example 2: No PII &mdash; Cheapest Provider</div>
+      <div><span class="t-label">Input:</span> <span class="t-cmd">"Summarize this quarterly report"</span></div>
+      <div><span class="t-label">  PII detected:     </span><span class="t-cost">False</span></div>
+      <div><span class="t-label">  Routing:          </span><span class="t-safe">CHEAPEST</span></div>
+      <div><span class="t-label">  Provider:         </span><span class="t-provider">any available</span></div>
+      <div><span class="t-label">  GDPR compliant:   </span><span class="t-safe">True</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section class="features" id="features">
+  <h2>Why teams switch</h2>
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#x1f6e1;</div>
+      <h3>Automatic PII Detection</h3>
+      <p>Dual-layer detection: Microsoft Presidio (NLP) + regex fallback. Detects emails, names, IBANs, phone numbers, SSN, and 15+ entity types.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1f1ea;&#x1f1fa;</div>
+      <h3>EU-Only Routing</h3>
+      <p>When PII is detected, requests are forced to EU providers (Scaleway Paris, OVHCloud). Cannot be bypassed via API. Ever.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1f4b0;</div>
+      <h3>30-70% Cost Savings</h3>
+      <p>Intelligent routing picks the cheapest provider for non-sensitive requests. Semantic cache eliminates duplicate inference costs.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1f504;</div>
+      <h3>Drop-in Replacement</h3>
+      <p>OpenAI-compatible API. Switch from OpenAI, Anthropic, Mistral, or Cohere by changing 2 lines. SDKs for Python and TypeScript.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1f4cb;</div>
+      <h3>GDPR Compliance Reports</h3>
+      <p>Auto-generated reports for your DPO. Shows which requests contained PII, where they were routed, and compliance score.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#x1f50d;</div>
+      <h3>Full Observability</h3>
+      <p>Prometheus metrics, structured logs, PII type counters. See exactly what flows where. No PII content in logs, ever.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Code -->
+<section class="code-section">
+  <h2>2 lines to migrate</h2>
+  <p class="subtitle">Your existing OpenAI code works unchanged</p>
+  <div class="code-block">
+    <div><span class="comment"># Before (OpenAI)</span></div>
+    <div><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI</div>
+    <div>client = OpenAI(api_key=<span class="string">"sk-..."</span>)</div>
+    <br>
+    <div><span class="comment"># After (mh-gdpr-ai) &mdash; same API, GDPR-compliant</span></div>
+    <div><span class="keyword">from</span> ai_infra <span class="keyword">import</span> Client</div>
+    <div>client = Client(api_key=<span class="string">"sk-..."</span>)</div>
+    <br>
+    <div><span class="comment"># Exact same code &mdash; zero changes</span></div>
+    <div>response = client.chat.completions.<span class="func">create</span>(</div>
+    <div>    model=<span class="string">"auto"</span>,</div>
+    <div>    messages=[{<span class="string">"role"</span>: <span class="string">"user"</span>, <span class="string">"content"</span>: <span class="string">"Hello"</span>}],</div>
+    <div>)</div>
+    <div><span class="keyword">print</span>(response.savings.cost_saved_usd)  <span class="comment"># bonus: see savings</span></div>
+  </div>
+</section>
+
+<!-- CTA bottom -->
+<section class="cta-bottom">
+  <h2>Ship GDPR-compliant AI today</h2>
+  <p>Open-source and free. Managed service coming soon.</p>
+  <form class="waitlist-form" id="waitlistForm2">
+    <input type="email" placeholder="you@company.com" required autocomplete="email">
+    <button type="submit">Join Waitlist</button>
+  </form>
+</section>
+
+<footer>
+  <p>
+    <a href="https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu" target="_blank" rel="noopener">GitHub</a>
+    &nbsp;&middot;&nbsp;
+    <a href="https://pypi.org/project/mh-gdpr-ai/" target="_blank" rel="noopener">PyPI</a>
+    &nbsp;&middot;&nbsp;
+    Apache 2.0 License
+    &nbsp;&middot;&nbsp;
+    Made in France
+  </p>
+</footer>
+
+<script>
+  // Waitlist form handler
+  // In production: replace with actual API endpoint (e.g., Formspree, ConvertKit, or your own backend)
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = this.querySelector('input[type="email"]').value;
+      if (!email) return;
+
+      // Store in localStorage as a simple MVP
+      // Replace with actual API call in production
+      const waitlist = JSON.parse(localStorage.getItem('waitlist') || '[]');
+      if (!waitlist.includes(email)) {
+        waitlist.push(email);
+        localStorage.setItem('waitlist', JSON.stringify(waitlist));
+      }
+
+      // Show success state
+      this.style.display = 'none';
+      const success = document.getElementById('waitlistSuccess');
+      if (success) success.style.display = 'block';
+
+      // For the bottom form, show inline message
+      if (this.id === 'waitlistForm2') {
+        const msg = document.createElement('div');
+        msg.style.cssText = 'color: #4ade80; padding: 1rem; border: 1px solid #4ade80; border-radius: 8px; background: rgba(74,222,128,0.1);';
+        msg.textContent = "You're on the list!";
+        this.parentNode.insertBefore(msg, this.nextSibling);
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

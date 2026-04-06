@@ -24,7 +24,7 @@
 
 <br><br>
 
-[Quick Start](#quick-start) &bull; [How It Works](#how-it-works) &bull; [Features](#features) &bull; [Examples](#examples) &bull; [API Reference](#api-reference) &bull; [Contributing](#contributing)
+[Quick Start](#quick-start) &bull; [How It Works](#how-it-works) &bull; [Features](#features) &bull; [SDKs](#sdks) &bull; [Examples](#examples) &bull; [API Reference](#api-reference) &bull; [Contributing](#contributing)
 
 </div>
 
@@ -226,6 +226,38 @@ print(result.compliance_summary)
 #     "model": "mistral-7b"
 # }
 ```
+
+<br>
+
+## SDKs
+
+Full-featured SDKs with OpenAI-compatible interface, circuit breaker, retry logic, and real-time cost tracking.
+
+| SDK | Install | Docs |
+|-----|---------|------|
+| **Python** | `pip install ai-infra` | [sdk/python/README.md](sdk/python/README.md) |
+| **TypeScript** | `npm install ai-infra` | [sdk/typescript/README.md](sdk/typescript/README.md) |
+
+### Migration from OpenAI (2 lines)
+
+```python
+# Before
+from openai import OpenAI
+client = OpenAI(api_key="sk-...")
+
+# After — same API, GDPR-compliant routing
+from ai_infra import Client
+client = Client(api_key="sk-...")
+
+# Zero changes to your existing code
+response = client.chat.completions.create(
+    model="auto",  # intelligent routing
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(response.savings.cost_saved_usd)  # see your savings
+```
+
+See [sdk/python/examples/](sdk/python/examples/) for more examples (streaming, cost tracking, sovereign routing, migration).
 
 <br>
 

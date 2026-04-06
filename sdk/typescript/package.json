@@ -1,0 +1,43 @@
+{
+  "name": "ai-infra",
+  "version": "1.0.0",
+  "description": "Official TypeScript SDK for the AI Infrastructure Platform — intelligent routing, cost optimization, RGPD-compliant sovereign AI",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src/ tests/",
+    "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "ai",
+    "infrastructure",
+    "gpu",
+    "routing",
+    "mistral",
+    "llm",
+    "rgpd",
+    "sovereign"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}
