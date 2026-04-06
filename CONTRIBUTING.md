@@ -6,7 +6,7 @@ Thank you for your interest in contributing! This project aims to make GDPR comp
 
 ```bash
 # Clone the repo
-git clone https://github.com/mh-gdpr-ai/mh-gdpr-ai.eu.git
+git clone https://github.com/mahadillahm4di-cyber/mh-gdpr-ai.eu.git
 cd mh-gdpr-ai.eu
 
 # Create a virtual environment
@@ -53,7 +53,7 @@ To add a new EU provider:
 
 ### Pull Requests
 
-1. Fork the repo and create a branch from `main`
+1. Fork the repo and create a branch from `master`
 2. Write tests for your changes
 3. Ensure all tests pass: `pytest`
 4. Ensure linting passes: `ruff check .`

@@ -32,8 +32,8 @@ jobs:
       - name: Type check
         run: mypy sovereign_gateway/ --ignore-missing-imports
 
-      - name: Test
-        run: pytest -v --tb=short
+      - name: Test with coverage
+        run: pytest -v --tb=short --cov=sovereign_gateway --cov-report=term-missing
 
   test-presidio:
     runs-on: ubuntu-latest
