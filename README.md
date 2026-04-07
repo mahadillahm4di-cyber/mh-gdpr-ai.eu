@@ -134,12 +134,20 @@ print(result.gdpr_compliant)      # True
 | Get compliance audit summary | No | `result.compliance_summary` |
 | **Call a real LLM with GDPR routing** | **Yes** | `gateway.complete()` |
 
-### See It In Action
+### See It In Action — v1 Demo
 
 <div align="center">
-<img src="docs/assets/demo-screenshot-1.png" alt="Demo - PII Detection & Routing" width="100%">
-<br><br>
-<img src="docs/assets/demo-screenshot-2.png" alt="Demo - Masking & GDPR Compliance" width="100%">
+
+**v1 Demo — PII Detection & Sovereign Routing**
+
+<img src="docs/assets/demo-screenshot-1.png" alt="v1 Demo - PII Detection & Sovereign Routing" width="100%">
+
+<br>
+
+**v1 Demo — PII Masking & GDPR Compliance Proof**
+
+<img src="docs/assets/demo-screenshot-2.png" alt="v1 Demo - PII Masking & GDPR Compliance Proof" width="100%">
+
 </div>
 
 <br>
