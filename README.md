@@ -77,7 +77,7 @@ Your EU User  -->  Your App  -->  Sovereign Gateway  -->  PII detected?
 pip install mh-gdpr-ai
 ```
 
-### 3 Lines of Code
+### 3 Lines — PII Detection + Routing Decision
 
 ```python
 from sovereign_gateway import SovereignGateway
@@ -91,7 +91,39 @@ print(result.forced_eu_routing)  # True
 print(result.gdpr_compliant)     # True
 ```
 
-That's it. PII detected = EU only. No PII = cheapest provider.
+### End-to-End — PII Detection + Routing + LLM Call
+
+Add your provider API key and the gateway calls the LLM for you:
+
+```python
+from sovereign_gateway import SovereignGateway
+
+# Configure with your provider(s)
+gateway = SovereignGateway(providers={
+    "scaleway": {"api_key": "scw-your-key"},       # EU provider (Paris)
+    "together_ai": {"api_key": "tok-your-key"},     # Non-EU fallback
+})
+
+# PII detected -> automatically calls Scaleway (EU only)
+result = gateway.complete([
+    {"role": "user", "content": "Analyze the account of jean.dupont@company.fr"}
+])
+
+print(result.content)             # Actual LLM response
+print(result.provider_used)       # "scaleway" (EU, because PII detected)
+print(result.forced_eu_routing)   # True
+print(result.gdpr_compliant)      # True
+print(result.tokens_used)         # 42
+
+# No PII -> automatically calls cheapest provider
+result = gateway.complete([
+    {"role": "user", "content": "Summarize this quarterly report"}
+])
+print(result.provider_used)       # cheapest available provider
+print(result.forced_eu_routing)   # False
+```
+
+Works with any OpenAI-compatible provider: Scaleway, OVHcloud, Together AI, OpenAI, Mistral, DeepSeek, Groq, Fireworks.
 
 ### See It In Action
 
@@ -291,21 +323,20 @@ from fastapi import FastAPI
 from sovereign_gateway import SovereignGateway
 
 app = FastAPI()
-gateway = SovereignGateway()
+gateway = SovereignGateway(providers={
+    "scaleway": {"api_key": "scw-your-key"},
+    "together_ai": {"api_key": "tok-your-key"},
+})
 
 @app.post("/v1/chat")
 async def chat(messages: list[dict]):
-    # Check routing before calling your LLM
-    result = gateway.route(messages)
+    # One call — PII detection + routing + LLM call
+    result = gateway.complete(messages)
 
-    if result.forced_eu_routing:
-        # Call EU provider (Scaleway, OVHCloud)
-        response = await call_eu_provider(messages, model=result.model_used)
-    else:
-        # Call cheapest provider
-        response = await call_any_provider(messages)
-
-    return {"response": response, "compliance": result.compliance_summary}
+    return {
+        "content": result.content,
+        "compliance": result.compliance_summary,
+    }
 ```
 
 ### PII Detection Only
@@ -370,11 +401,43 @@ The main entry point.
 
 | Method | Description | Returns |
 |--------|-------------|---------|
-| `route(messages, model?, request_id?)` | Analyze and route | `RouteResult` |
+| `complete(messages, model?, max_tokens?, temperature?)` | **End-to-end: PII scan + routing + LLM call** | `CompletionResult` |
+| `route(messages, model?, request_id?)` | PII scan + routing decision (no LLM call) | `RouteResult` |
 | `detect_pii(text)` | Detect PII types | `list[str]` |
 | `has_pii(text)` | Quick PII check | `bool` |
 | `mask(text)` | Mask PII in text | `str` |
 | `mask_messages(messages)` | Mask PII in messages | `list[dict]` |
+
+Constructor accepts `providers=` dict to configure LLM providers:
+
+```python
+gateway = SovereignGateway(providers={
+    "scaleway": {"api_key": "scw-xxx"},                              # EU (Paris)
+    "ovhcloud": {"api_key": "ovh-xxx"},                              # EU (Gravelines)
+    "together_ai": {"api_key": "tok-xxx"},                           # Non-EU fallback
+    "openai": {"api_key": "sk-xxx"},                                 # Non-EU
+    "scaleway": {"api_key": "scw-xxx", "base_url": "https://custom.url/v1"},  # Custom URL
+})
+```
+
+Or set environment variables: `SCALEWAY_API_KEY`, `TOGETHER_AI_API_KEY`, `OPENAI_API_KEY`, etc.
+
+### `CompletionResult`
+
+Returned by `gateway.complete()` — includes the LLM response and compliance metadata.
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `content` | `str` | The model's response text |
+| `model_used` | `str` | Model that generated the response |
+| `provider_used` | `str` | Provider that served the request |
+| `forced_eu_routing` | `bool` | Whether EU was forced due to PII |
+| `gdpr_compliant` | `bool` | Whether the request is GDPR compliant |
+| `pii_detected` | `bool` | Whether PII was found |
+| `pii_types` | `list[str]` | Types of PII detected |
+| `latency_ms` | `float` | Total time (PII scan + routing + LLM call) |
+| `tokens_used` | `int` | Total tokens consumed |
+| `compliance_summary` | `dict` | Audit-ready summary for DPO |
 
 ### `RouteResult`
 
@@ -435,12 +498,14 @@ The gateway supports **20+ models** across **9 families**: Mistral, OpenAI, Anth
 ```
 mh-gdpr-ai.eu/
 ├── sovereign_gateway/          # Main package
-│   ├── gateway.py              # SovereignGateway (main entry point)
+│   ├── gateway.py              # SovereignGateway (route + complete)
 │   ├── pii/
 │   │   ├── detector.py         # Dual-layer PII detection
 │   │   └── masker.py           # PII masking
 │   ├── router/
 │   │   └── sovereign.py        # Sovereign routing engine
+│   ├── providers/
+│   │   └── openai_compat.py    # OpenAI-compatible provider client
 │   └── models/
 │       └── schemas.py          # Pydantic models
 ├── examples/                   # Working examples
@@ -510,11 +575,11 @@ This gateway ensures that never happens, automatically.
 - [x] Compliance audit summaries
 - [x] PyPI package published
 - [x] CI/CD with automated PyPI publish
+- [x] End-to-end LLM calls (`gateway.complete()`) with automatic EU routing
+- [x] Multi-provider support (Scaleway, OVHcloud, Together AI, OpenAI, etc.)
 - [ ] Semantic cache integration
-- [ ] LiteLLM provider integration
 - [ ] Real-time dashboard
 - [ ] GDPR compliance report generation (PDF)
-- [ ] OpenAI SDK drop-in replacement
 
 <br>
 

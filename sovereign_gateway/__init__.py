@@ -15,6 +15,7 @@ Usage:
 
 from sovereign_gateway.gateway import SovereignGateway
 from sovereign_gateway.models.schemas import (
+    CompletionResult,
     Message,
     PIIEntity,
     Provider,
@@ -25,11 +26,12 @@ from sovereign_gateway.models.schemas import (
 from sovereign_gateway.pii.detector import PIIDetector
 from sovereign_gateway.pii.masker import PIIMasker
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __all__ = [
     "SovereignGateway",
     "PIIDetector",
     "PIIMasker",
+    "CompletionResult",
     "Message",
     "RouteResult",
     "RoutingDecision",

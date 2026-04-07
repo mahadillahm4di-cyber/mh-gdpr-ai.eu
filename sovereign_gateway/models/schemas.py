@@ -156,3 +156,39 @@ class RouteResult(BaseModel):
             "provider": self.provider_used,
             "model": self.model_used,
         }
+
+
+# ---------------------------------------------------------------------------
+# Completion result (route + actual LLM response)
+# ---------------------------------------------------------------------------
+
+
+class CompletionResult(BaseModel):
+    """Complete result: routing decision + LLM response.
+
+    Returned by SovereignGateway.complete() — includes both the AI response
+    and full compliance metadata.
+    """
+
+    content: str = Field(..., description="The model's response text")
+    model_used: str = Field(..., description="Model that generated the response")
+    provider_used: str = Field(..., description="Provider that served the request")
+    forced_eu_routing: bool = Field(..., description="Whether EU routing was forced due to PII")
+    gdpr_compliant: bool = Field(..., description="Whether the request is GDPR compliant")
+    pii_detected: bool = Field(..., description="Whether PII was found in the input")
+    pii_types: list[str] = Field(default_factory=list, description="Types of PII detected")
+    latency_ms: float = Field(..., ge=0.0, description="Total processing time in ms")
+    tokens_used: int = Field(default=0, ge=0, description="Total tokens used")
+
+    @property
+    def compliance_summary(self) -> dict[str, Any]:
+        """Generate a compliance-ready summary for audit logs."""
+        return {
+            "gdpr_compliant": self.gdpr_compliant,
+            "pii_detected": self.pii_detected,
+            "pii_types": self.pii_types,
+            "routing_decision": "eu_only" if self.forced_eu_routing else "cheapest",
+            "provider_region": "EU" if self.forced_eu_routing else "ANY",
+            "provider": self.provider_used,
+            "model": self.model_used,
+        }
