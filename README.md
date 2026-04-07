@@ -137,24 +137,12 @@ print(result.gdpr_compliant)      # True
 ### See It In Action — v1 Demo
 
 <div align="center">
-<table>
-<tr>
-<td width="50%">
 
 **v1 Demo — PII Detection & Sovereign Routing**
 
 <img src="docs/assets/demo-screenshot-1.png" alt="v1 Demo - PII Detection & Sovereign Routing" width="100%">
 
-</td>
-<td width="50%">
-
-**v1 Demo — Live**
-
-<img src="docs/assets/demo-v1.gif" alt="v1 Demo - Live" width="100%">
-
-</td>
-</tr>
-</table>
+<br>
 
 **v1 Demo — PII Masking & GDPR Compliance Proof**
 
