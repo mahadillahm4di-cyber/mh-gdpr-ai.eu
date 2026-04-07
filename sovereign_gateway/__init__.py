@@ -3,14 +3,22 @@
 Automatically detects personal data in LLM prompts and forces EU-only routing
 when PII is found. No PII = cheapest provider. Full compliance, zero overhead.
 
-Usage:
+Decision only (no LLM call):
     from sovereign_gateway import SovereignGateway
 
     gateway = SovereignGateway()
-    result = await gateway.route(
-        messages=[{"role": "user", "content": "Hello, my name is Jean Dupont"}],
+    result = gateway.route(
+        [{"role": "user", "content": "Hello, my name is Jean Dupont"}],
     )
     # result.forced_eu_routing == True (PII detected: PERSON)
+
+End-to-end (PII scan + routing + LLM call):
+    gateway = SovereignGateway(providers={"scaleway": {"api_key": "scw-..."}})
+    result = gateway.complete(
+        [{"role": "user", "content": "Hello, my name is Jean Dupont"}],
+    )
+    # result.content == "..." (actual LLM response)
+    # result.provider_used == "scaleway" (EU, because PII)
 """
 
 from sovereign_gateway.gateway import SovereignGateway

@@ -44,12 +44,16 @@ We welcome new PII detection patterns, especially for non-US/non-EU formats. To 
 
 ### Adding Provider Support
 
-To add a new EU provider:
+To add a new provider (EU or non-EU):
 
 1. Add the provider to the `Provider` enum in `models/schemas.py`
-2. If EU-based, add to `EU_PROVIDERS`
-3. Update the routing priority in `router/sovereign.py`
-4. Add tests
+2. If EU-based, add to `EU_PROVIDERS` in `router/sovereign.py`
+3. In `providers/openai_compat.py`:
+   - Add the provider's base URL to `_PROVIDER_BASE_URLS`
+   - Add the env var name to `_PROVIDER_ENV_KEYS`
+   - Add model name mappings to `_PROVIDER_MODEL_MAP`
+4. Update the routing priority in `router/sovereign.py`
+5. Add tests in `tests/test_complete.py`
 
 ### Pull Requests
 

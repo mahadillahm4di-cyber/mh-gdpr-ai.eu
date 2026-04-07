@@ -10,13 +10,16 @@ def main() -> None:
     gateway = SovereignGateway(use_presidio=False)
 
     print()
-    print("  mh-gdpr-ai.eu v0.1.0")
+    print("  mh-gdpr-ai.eu v0.2.0")
     print("  GDPR-compliant LLM routing with PII detection")
     print()
-    print("  Try it:")
-    print("    from sovereign_gateway import SovereignGateway")
+    print("  Decision only (no LLM call):")
     print("    gw = SovereignGateway()")
     print('    result = gw.route([{"role": "user", "content": "test@email.com"}])')
+    print()
+    print("  End-to-end (PII scan + routing + LLM call):")
+    print('    gw = SovereignGateway(providers={"scaleway": {"api_key": "scw-..."}})')
+    print('    result = gw.complete([{"role": "user", "content": "test@email.com"}])')
     print()
 
     # Quick self-test

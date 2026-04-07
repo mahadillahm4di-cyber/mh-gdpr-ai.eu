@@ -261,35 +261,32 @@ print(result.compliance_summary)
 
 <br>
 
-## SDKs
+## SDKs (coming soon)
 
-Full-featured SDKs with OpenAI-compatible interface, circuit breaker, retry logic, and real-time cost tracking.
+Full-featured SDKs with OpenAI-compatible drop-in replacement, circuit breaker, retry logic, and real-time cost tracking. The SDKs are built and tested in [sdk/](sdk/) but not yet published to PyPI/npm.
 
-| SDK | Install | Docs |
-|-----|---------|------|
-| **Python** | `pip install ai-infra` | [sdk/python/README.md](sdk/python/README.md) |
-| **TypeScript** | `npm install ai-infra` | [sdk/typescript/README.md](sdk/typescript/README.md) |
+| SDK | Status | Docs |
+|-----|--------|------|
+| **Python** | Built, not yet published | [sdk/python/README.md](sdk/python/README.md) |
+| **TypeScript** | Built, not yet published | [sdk/typescript/README.md](sdk/typescript/README.md) |
 
-### Migration from OpenAI (2 lines)
+**Today, use the gateway directly:**
 
 ```python
-# Before
-from openai import OpenAI
-client = OpenAI(api_key="sk-...")
+# pip install mh-gdpr-ai
+from sovereign_gateway import SovereignGateway
 
-# After — same API, GDPR-compliant routing
-from ai_infra import Client
-client = Client(api_key="sk-...")
+gateway = SovereignGateway(providers={
+    "scaleway": {"api_key": "scw-..."},
+})
 
-# Zero changes to your existing code
-response = client.chat.completions.create(
-    model="auto",  # intelligent routing
-    messages=[{"role": "user", "content": "Hello"}],
-)
-print(response.savings.cost_saved_usd)  # see your savings
+# End-to-end: PII detection + routing + LLM call
+result = gateway.complete([
+    {"role": "user", "content": "Analyze jean.dupont@company.fr"}
+])
+print(result.content)           # LLM response
+print(result.forced_eu_routing) # True (PII -> EU only)
 ```
-
-See [sdk/python/examples/](sdk/python/examples/) for more examples (streaming, cost tracking, sovereign routing, migration).
 
 <br>
 

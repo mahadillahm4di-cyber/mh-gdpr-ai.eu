@@ -1,9 +1,9 @@
-"""FastAPI integration example — mh-gdpr-ai.eu as a middleware.
+"""FastAPI integration example — mh-gdpr-ai.eu as middleware.
 
 Shows how to add GDPR-compliant PII routing to any FastAPI application.
 Run: uvicorn examples.fastapi_integration:app --reload
 
-Requires: pip install fastapi uvicorn
+Requires: pip install mh-gdpr-ai[api]
 """
 
 from fastapi import FastAPI
@@ -14,10 +14,18 @@ from sovereign_gateway import SovereignGateway
 app = FastAPI(
     title="mh-gdpr-ai.eu",
     description="GDPR-compliant LLM routing with real-time PII detection",
-    version="0.1.0",
+    version="0.2.0",
 )
 
-gateway = SovereignGateway()
+# Configure with your provider API keys.
+# PII detected -> routes to EU provider (Scaleway).
+# No PII -> routes to cheapest provider.
+gateway = SovereignGateway(
+    providers={
+        "scaleway": {"api_key": "scw-your-key"},  # EU (Paris)
+        "together_ai": {"api_key": "tok-your-key"},  # Non-EU fallback
+    },
+)
 
 
 class ChatRequest(BaseModel):
@@ -26,6 +34,17 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
+    content: str
+    model: str
+    provider: str
+    pii_detected: bool
+    pii_types: list[str]
+    forced_eu: bool
+    gdpr_compliant: bool
+    latency_ms: float
+
+
+class RouteResponse(BaseModel):
     routing_decision: str
     model: str
     provider: str
@@ -36,19 +55,42 @@ class ChatResponse(BaseModel):
     latency_ms: float
 
 
-@app.post("/v1/chat/route", response_model=ChatResponse)
-async def route_chat(request: ChatRequest) -> ChatResponse:
-    """Analyze a chat request and return the routing decision.
+@app.post("/v1/chat/complete", response_model=ChatResponse)
+async def complete_chat(request: ChatRequest) -> ChatResponse:
+    """End-to-end: PII detection + routing + LLM call.
 
-    The gateway detects PII in the messages and routes to EU providers
-    when personal data is found. No PII = cheapest provider.
+    PII detected -> routed to EU provider (Scaleway/OVHcloud).
+    No PII -> routed to cheapest provider.
+    """
+    result = gateway.complete(
+        messages=request.messages,
+        model=request.model,
+    )
+
+    return ChatResponse(
+        content=result.content,
+        model=result.model_used,
+        provider=result.provider_used,
+        pii_detected=result.pii_detected,
+        pii_types=result.pii_types,
+        forced_eu=result.forced_eu_routing,
+        gdpr_compliant=result.gdpr_compliant,
+        latency_ms=result.latency_ms,
+    )
+
+
+@app.post("/v1/chat/route", response_model=RouteResponse)
+async def route_chat(request: ChatRequest) -> RouteResponse:
+    """Decision only: PII detection + routing (no LLM call).
+
+    Use this to check where a request would be routed.
     """
     result = gateway.route(
         messages=request.messages,
         model=request.model,
     )
 
-    return ChatResponse(
+    return RouteResponse(
         routing_decision=result.decision.value,
         model=result.model_used,
         provider=result.provider_used,
@@ -79,4 +121,4 @@ async def mask_pii(text: str) -> dict:
 
 @app.get("/health")
 async def health() -> dict:
-    return {"status": "ok", "service": "mh-gdpr-ai.eu"}
+    return {"status": "ok", "service": "mh-gdpr-ai.eu", "version": "0.2.0"}
