@@ -137,7 +137,9 @@ print(result.gdpr_compliant)      # True
 ### See It In Action
 
 <div align="center">
-<img src="docs/assets/demo.svg" alt="Demo" width="100%">
+<img src="docs/assets/demo-screenshot-1.png" alt="Demo - PII Detection & Routing" width="100%">
+<br><br>
+<img src="docs/assets/demo-screenshot-2.png" alt="Demo - Masking & GDPR Compliance" width="100%">
 </div>
 
 <br>
