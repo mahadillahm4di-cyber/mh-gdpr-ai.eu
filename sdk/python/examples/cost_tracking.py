@@ -34,13 +34,15 @@ for prompt in prompts:
     total_cost += savings.cost_usd
     total_saved += savings.cost_saved_usd
 
-    print(f"  {prompt[:40]:<40} | "
-          f"model={savings.model_used:<15} | "
-          f"${savings.cost_usd:.4f} | "
-          f"saved ${savings.cost_saved_usd:.4f}")
+    print(
+        f"  {prompt[:40]:<40} | "
+        f"model={savings.model_used:<15} | "
+        f"${savings.cost_usd:.4f} | "
+        f"saved ${savings.cost_saved_usd:.4f}"
+    )
 
 # Print aggregate stats
-print(f"\n{'='*70}")
+print(f"\n{'=' * 70}")
 print(f"Total cost:    ${total_cost:.4f}")
 print(f"Total saved:   ${total_saved:.4f}")
 if total_cost + total_saved > 0:

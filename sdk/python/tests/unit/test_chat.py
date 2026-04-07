@@ -47,12 +47,16 @@ def _make_client(**kwargs: Any) -> Client:
 
 # ── Non-streaming tests ──────────────────────────────────────────
 
+
 class TestChatCompletionsCreate:
     def test_basic_completion(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             result = c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hello"}],
@@ -65,9 +69,12 @@ class TestChatCompletionsCreate:
 
     def test_explicit_model(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(model="gpt-4o"),
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(model="gpt-4o"),
+                )
+            )
             c = _make_client()
             c.chat.completions.create(
                 model="gpt-4o",
@@ -79,9 +86,12 @@ class TestChatCompletionsCreate:
 
     def test_auto_model_omits_model_field(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             c.chat.completions.create(
                 model="auto",
@@ -93,9 +103,12 @@ class TestChatCompletionsCreate:
 
     def test_routing_mode_sent(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -107,9 +120,12 @@ class TestChatCompletionsCreate:
 
     def test_client_default_mode(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client(mode="best_cost")
             c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -120,9 +136,12 @@ class TestChatCompletionsCreate:
 
     def test_parameters_forwarded(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -138,9 +157,12 @@ class TestChatCompletionsCreate:
 
     def test_request_id_generated(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -178,9 +200,12 @@ class TestChatCompletionsValidation:
 class TestChatCompletionsPiiCheck:
     def test_pii_warning_emitted(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             with pytest.warns(UserWarning, match="PII detected"):
                 c.chat.completions.create(
@@ -191,9 +216,12 @@ class TestChatCompletionsPiiCheck:
 
     def test_no_pii_no_warning(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(),
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(),
+                )
+            )
             c = _make_client()
             # Should not warn
             c.chat.completions.create(
@@ -205,19 +233,26 @@ class TestChatCompletionsPiiCheck:
 
 # ── Error handling tests ──────────────────────────────────────────
 
+
 class TestChatCompletionsErrors:
-    @pytest.mark.parametrize("status,exc_cls", [
-        (401, AuthenticationError),
-        (402, BudgetExceededError),
-        (403, SecurityBlockedError),
-        (429, RateLimitError),
-        (503, NoProviderAvailableError),
-    ])
+    @pytest.mark.parametrize(
+        "status,exc_cls",
+        [
+            (401, AuthenticationError),
+            (402, BudgetExceededError),
+            (403, SecurityBlockedError),
+            (429, RateLimitError),
+            (503, NoProviderAvailableError),
+        ],
+    )
     def test_error_mapping(self, status: int, exc_cls: type) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                status, text="error",
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    status,
+                    text="error",
+                )
+            )
             c = _make_client(retry_config=RetryConfig(max_retries=0))
             with pytest.raises(exc_cls):
                 c.chat.completions.create(
@@ -228,14 +263,17 @@ class TestChatCompletionsErrors:
 
 # ── Retry tests ───────────────────────────────────────────────────
 
+
 class TestChatCompletionsRetry:
     def test_retries_on_503(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(side_effect=[
-                httpx.Response(503, text="Unavailable"),
-                httpx.Response(503, text="Unavailable"),
-                httpx.Response(200, json=make_api_response()),
-            ])
+            route = respx.post(ROUTE_URL).mock(
+                side_effect=[
+                    httpx.Response(503, text="Unavailable"),
+                    httpx.Response(503, text="Unavailable"),
+                    httpx.Response(200, json=make_api_response()),
+                ]
+            )
             c = _make_client()
             result = c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -246,9 +284,12 @@ class TestChatCompletionsRetry:
 
     def test_no_retry_on_401(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                401, text="Unauthorized",
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    401,
+                    text="Unauthorized",
+                )
+            )
             c = _make_client()
             with pytest.raises(AuthenticationError):
                 c.chat.completions.create(
@@ -259,9 +300,12 @@ class TestChatCompletionsRetry:
 
     def test_no_retry_on_402(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                402, text="Budget exceeded",
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    402,
+                    text="Budget exceeded",
+                )
+            )
             c = _make_client()
             with pytest.raises(BudgetExceededError):
                 c.chat.completions.create(
@@ -272,9 +316,12 @@ class TestChatCompletionsRetry:
 
     def test_exhausts_retries(self) -> None:
         with respx.mock:
-            route = respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                503, text="Unavailable",
-            ))
+            route = respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    503,
+                    text="Unavailable",
+                )
+            )
             c = _make_client()
             with pytest.raises(NoProviderAvailableError):
                 c.chat.completions.create(
@@ -286,12 +333,16 @@ class TestChatCompletionsRetry:
 
 # ── Circuit breaker tests ─────────────────────────────────────────
 
+
 class TestChatCompletionsCircuitBreaker:
     def test_circuit_breaker_opens(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                503, text="down",
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    503,
+                    text="down",
+                )
+            )
             c = _make_client(
                 retry_config=RetryConfig(max_retries=0, base_delay=0, jitter=0),
                 circuit_breaker_config=CircuitBreakerConfig(failure_threshold=3),
@@ -313,15 +364,18 @@ class TestChatCompletionsCircuitBreaker:
 
 # ── Streaming tests ───────────────────────────────────────────────
 
+
 class TestChatCompletionsStreaming:
     def test_stream_chunks(self) -> None:
         with respx.mock:
             sse_content = make_sse_stream(chunks=["Hello", " world"])
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200,
-                content=sse_content.encode(),
-                headers={"content-type": "text/event-stream"},
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    content=sse_content.encode(),
+                    headers={"content-type": "text/event-stream"},
+                )
+            )
             c = _make_client()
             stream = c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -338,11 +392,13 @@ class TestChatCompletionsStreaming:
     def test_stream_metadata(self) -> None:
         with respx.mock:
             sse_content = make_sse_stream(model="mixtral-8x7b", provider="ovhcloud")
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200,
-                content=sse_content.encode(),
-                headers={"content-type": "text/event-stream"},
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    content=sse_content.encode(),
+                    headers={"content-type": "text/event-stream"},
+                )
+            )
             c = _make_client()
             stream = c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -357,11 +413,13 @@ class TestChatCompletionsStreaming:
     def test_stream_context_manager(self) -> None:
         with respx.mock:
             sse_content = make_sse_stream()
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200,
-                content=sse_content.encode(),
-                headers={"content-type": "text/event-stream"},
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    content=sse_content.encode(),
+                    headers={"content-type": "text/event-stream"},
+                )
+            )
             c = _make_client()
             stream = c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -374,9 +432,12 @@ class TestChatCompletionsStreaming:
 
     def test_stream_error_response(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                503, text="No provider",
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    503,
+                    text="No provider",
+                )
+            )
             c = _make_client()
             with pytest.raises(NoProviderAvailableError):
                 c.chat.completions.create(
@@ -388,12 +449,16 @@ class TestChatCompletionsStreaming:
 
 # ── Telemetry tests ───────────────────────────────────────────────
 
+
 class TestChatCompletionsTelemetry:
     def test_telemetry_recorded_on_success(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                200, json=make_api_response(cost_usd=0.005),
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    200,
+                    json=make_api_response(cost_usd=0.005),
+                )
+            )
             c = _make_client(telemetry=True)
             c.chat.completions.create(
                 messages=[{"role": "user", "content": "Hi"}],
@@ -405,9 +470,12 @@ class TestChatCompletionsTelemetry:
 
     def test_telemetry_recorded_on_error(self) -> None:
         with respx.mock:
-            respx.post(ROUTE_URL).mock(return_value=httpx.Response(
-                401, text="Unauthorized",
-            ))
+            respx.post(ROUTE_URL).mock(
+                return_value=httpx.Response(
+                    401,
+                    text="Unauthorized",
+                )
+            )
             c = _make_client(
                 telemetry=True,
                 retry_config=RetryConfig(max_retries=0),

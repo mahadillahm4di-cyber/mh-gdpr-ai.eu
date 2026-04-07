@@ -13,9 +13,11 @@ print("=" * 60)
 print("Example 1: Message with PII (email)")
 print("=" * 60)
 
-result = gateway.route([
-    {"role": "user", "content": "Please analyze the account of jean.dupont@company.fr"},
-])
+result = gateway.route(
+    [
+        {"role": "user", "content": "Please analyze the account of jean.dupont@company.fr"},
+    ]
+)
 
 print(f"  PII detected:      {result.pii_detected}")
 print(f"  PII types:         {result.pii_types}")
@@ -31,9 +33,11 @@ print("=" * 60)
 print("Example 2: Message without PII")
 print("=" * 60)
 
-result = gateway.route([
-    {"role": "user", "content": "Summarize the key points of this quarterly report."},
-])
+result = gateway.route(
+    [
+        {"role": "user", "content": "Summarize the key points of this quarterly report."},
+    ]
+)
 
 print(f"  PII detected:      {result.pii_detected}")
 print(f"  Forced EU routing: {result.forced_eu_routing}")
@@ -46,13 +50,17 @@ print("=" * 60)
 print("Example 3: Multiple PII types in one message")
 print("=" * 60)
 
-result = gateway.route([{
-    "role": "user",
-    "content": (
-        "Patient Jean Dupont (jean@hospital.fr) has IBAN "
-        "FR76 3000 6000 0112 3456 7890 189. Please process the refund."
-    ),
-}])
+result = gateway.route(
+    [
+        {
+            "role": "user",
+            "content": (
+                "Patient Jean Dupont (jean@hospital.fr) has IBAN "
+                "FR76 3000 6000 0112 3456 7890 189. Please process the refund."
+            ),
+        }
+    ]
+)
 
 print(f"  PII detected:      {result.pii_detected}")
 print(f"  PII types:         {result.pii_types}")

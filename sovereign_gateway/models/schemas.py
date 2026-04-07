@@ -75,22 +75,26 @@ class RoutingDecision(str, enum.Enum):
 
 
 # Models safe for EU-only routing (can be hosted on EU providers)
-EU_SAFE_MODELS: frozenset[SupportedModel] = frozenset({
-    SupportedModel.MISTRAL_7B,
-    SupportedModel.MIXTRAL_8X7B,
-    SupportedModel.CODESTRAL,
-    SupportedModel.MISTRAL_LARGE,
-    SupportedModel.MISTRAL_EMBED,
-    SupportedModel.LLAMA_3_70B,
-    SupportedModel.LLAMA_3_8B,
-    SupportedModel.GEMMA_7B,
-})
+EU_SAFE_MODELS: frozenset[SupportedModel] = frozenset(
+    {
+        SupportedModel.MISTRAL_7B,
+        SupportedModel.MIXTRAL_8X7B,
+        SupportedModel.CODESTRAL,
+        SupportedModel.MISTRAL_LARGE,
+        SupportedModel.MISTRAL_EMBED,
+        SupportedModel.LLAMA_3_70B,
+        SupportedModel.LLAMA_3_8B,
+        SupportedModel.GEMMA_7B,
+    }
+)
 
 # EU-based providers (GDPR-compliant hosting)
-EU_PROVIDERS: frozenset[Provider] = frozenset({
-    Provider.SCALEWAY,
-    Provider.OVHCLOUD,
-})
+EU_PROVIDERS: frozenset[Provider] = frozenset(
+    {
+        Provider.SCALEWAY,
+        Provider.OVHCLOUD,
+    }
+)
 
 
 # ---------------------------------------------------------------------------

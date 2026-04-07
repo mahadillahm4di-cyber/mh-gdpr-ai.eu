@@ -42,22 +42,29 @@ class TestClientModes:
         assert client.routing_mode is None
 
     def test_string_mode(self) -> None:
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                    mode="best_cost", verify_ssl=False)
+        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL, mode="best_cost", verify_ssl=False)
         assert c.routing_mode == "best_cost"
         c.close()
 
     def test_enum_mode(self) -> None:
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                    mode=RoutingMode.EU_ONLY, verify_ssl=False)
+        c = Client(
+            api_key=TEST_API_KEY, base_url=TEST_BASE_URL, mode=RoutingMode.EU_ONLY, verify_ssl=False
+        )
         assert c.routing_mode == "eu_only"
         c.close()
 
     def test_all_mode_aliases(self) -> None:
-        for mode_str in ["best_cost", "best_quality", "best_speed",
-                         "balanced", "eu_only", "best_availability"]:
-            c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                       mode=mode_str, verify_ssl=False)
+        for mode_str in [
+            "best_cost",
+            "best_quality",
+            "best_speed",
+            "balanced",
+            "eu_only",
+            "best_availability",
+        ]:
+            c = Client(
+                api_key=TEST_API_KEY, base_url=TEST_BASE_URL, mode=mode_str, verify_ssl=False
+            )
             assert c.routing_mode == mode_str
             c.close()
 
@@ -73,21 +80,18 @@ class TestClientProperties:
         assert headers["Content-Type"] == "application/json"
 
     def test_timeout(self) -> None:
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                    timeout=30.0, verify_ssl=False)
+        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL, timeout=30.0, verify_ssl=False)
         assert c.timeout == 30.0
         c.close()
 
     def test_custom_retry_config(self) -> None:
         cfg = RetryConfig(max_retries=5)
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                    retry_config=cfg, verify_ssl=False)
+        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL, retry_config=cfg, verify_ssl=False)
         assert c.retry_config.max_retries == 5
         c.close()
 
     def test_max_retries_shortcut(self) -> None:
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                    max_retries=10, verify_ssl=False)
+        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL, max_retries=10, verify_ssl=False)
         assert c.retry_config.max_retries == 10
         c.close()
 
@@ -115,16 +119,14 @@ class TestClientStats:
         assert stats["total_requests"] == 0
 
     def test_telemetry_enabled(self) -> None:
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                    telemetry=True, verify_ssl=False)
+        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL, telemetry=True, verify_ssl=False)
         assert c.telemetry.enabled is True
         c.close()
 
 
 class TestClientLifecycle:
     def test_context_manager(self) -> None:
-        with Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL,
-                     verify_ssl=False) as c:
+        with Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL, verify_ssl=False) as c:
             assert c.http_client is not None
 
     def test_repr_masks_key(self) -> None:
@@ -135,7 +137,6 @@ class TestClientLifecycle:
         c.close()
 
     def test_trailing_slash_stripped(self) -> None:
-        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL + "/",
-                    verify_ssl=False)
+        c = Client(api_key=TEST_API_KEY, base_url=TEST_BASE_URL + "/", verify_ssl=False)
         assert not c.route_url.endswith("//v1/route")
         c.close()

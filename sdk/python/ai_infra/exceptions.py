@@ -35,6 +35,7 @@ class AIInfraError(Exception):
 
 # ── Authentication ────────────────────────────────────────────────
 
+
 class AuthenticationError(AIInfraError):
     """API key is invalid, expired, or missing."""
 
@@ -58,6 +59,7 @@ class PermissionError(AIInfraError):  # noqa: A001 – shadows builtin intention
 
 
 # ── Rate limiting / budget ────────────────────────────────────────
+
 
 class RateLimitError(AIInfraError):
     """Too many requests — the caller should slow down."""
@@ -86,6 +88,7 @@ class BudgetExceededError(AIInfraError):
 
 # ── Provider / routing ────────────────────────────────────────────
 
+
 class ProviderError(AIInfraError):
     """Upstream GPU provider returned an error."""
 
@@ -113,6 +116,7 @@ class NoProviderAvailableError(AIInfraError):
 
 # ── Validation ────────────────────────────────────────────────────
 
+
 class ValidationError(AIInfraError):
     """Client-side request validation failed before sending."""
 
@@ -121,6 +125,7 @@ class ValidationError(AIInfraError):
 
 
 # ── Security ──────────────────────────────────────────────────────
+
 
 class SecurityBlockedError(AIInfraError):
     """Request was blocked by the security screening layer."""
@@ -134,6 +139,7 @@ class SecurityBlockedError(AIInfraError):
 
 
 # ── Network ───────────────────────────────────────────────────────
+
 
 class ConnectionError(AIInfraError):  # noqa: A001
     """Network-level failure (DNS, TCP, TLS handshake)."""

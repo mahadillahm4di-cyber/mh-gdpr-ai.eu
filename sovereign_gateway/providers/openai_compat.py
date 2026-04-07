@@ -163,8 +163,13 @@ def load_providers_from_env() -> dict[str, ProviderConfig]:
 
     eu_providers = {"scaleway", "ovhcloud"}
     priorities = {
-        "scaleway": 1, "ovhcloud": 2, "runpod": 3,
-        "lambda_labs": 4, "together_ai": 5, "openai": 6, "litellm": 7,
+        "scaleway": 1,
+        "ovhcloud": 2,
+        "runpod": 3,
+        "lambda_labs": 4,
+        "together_ai": 5,
+        "openai": 6,
+        "litellm": 7,
     }
 
     for name, env_key in _PROVIDER_ENV_KEYS.items():

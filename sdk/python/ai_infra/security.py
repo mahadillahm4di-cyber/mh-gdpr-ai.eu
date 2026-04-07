@@ -122,8 +122,7 @@ def sanitize_content(text: str, *, max_length: int = 1_000_000) -> str:
     """
     if len(text) > max_length:
         raise ValidationError(
-            f"Content exceeds maximum length of {max_length:,} characters "
-            f"(got {len(text):,}).",
+            f"Content exceeds maximum length of {max_length:,} characters (got {len(text):,}).",
         )
     return _DANGEROUS_CHARS.sub("", text)
 
@@ -181,18 +180,19 @@ def validate_messages(
 
         if role not in valid_roles:
             raise ValidationError(
-                f"messages[{i}].role must be one of {valid_roles}, "
-                f"got {role!r}.",
+                f"messages[{i}].role must be one of {valid_roles}, got {role!r}.",
             )
         if not isinstance(content, str) or not content.strip():
             raise ValidationError(
                 f"messages[{i}].content must be a non-empty string.",
             )
 
-        validated.append({
-            "role": role,
-            "content": sanitize_content(content, max_length=max_content_length),
-        })
+        validated.append(
+            {
+                "role": role,
+                "content": sanitize_content(content, max_length=max_content_length),
+            }
+        )
 
     return validated
 

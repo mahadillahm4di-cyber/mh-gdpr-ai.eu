@@ -65,9 +65,11 @@ class TestComplianceSummary:
     """Verify the compliance summary output for audit logs."""
 
     def test_compliance_summary_with_pii(self, gateway: SovereignGateway) -> None:
-        result = gateway.route([
-            {"role": "user", "content": "My email is test@example.com"},
-        ])
+        result = gateway.route(
+            [
+                {"role": "user", "content": "My email is test@example.com"},
+            ]
+        )
         summary = result.compliance_summary
 
         assert summary["gdpr_compliant"] is True
@@ -76,9 +78,11 @@ class TestComplianceSummary:
         assert summary["provider_region"] == "EU"
 
     def test_compliance_summary_without_pii(self, gateway: SovereignGateway) -> None:
-        result = gateway.route([
-            {"role": "user", "content": "Hello, how are you?"},
-        ])
+        result = gateway.route(
+            [
+                {"role": "user", "content": "Hello, how are you?"},
+            ]
+        )
         summary = result.compliance_summary
 
         assert summary["pii_detected"] is False
@@ -89,10 +93,14 @@ class TestMultiplePIITypes:
     """Verify detection of multiple PII types in a single message."""
 
     def test_detects_email_and_phone(self, gateway: SovereignGateway) -> None:
-        result = gateway.route([{
-            "role": "user",
-            "content": "Contact jean@company.fr or call +33 6 12 34 56 78",
-        }])
+        result = gateway.route(
+            [
+                {
+                    "role": "user",
+                    "content": "Contact jean@company.fr or call +33 6 12 34 56 78",
+                }
+            ]
+        )
 
         assert result.pii_detected is True
         assert result.forced_eu_routing is True
@@ -100,10 +108,14 @@ class TestMultiplePIITypes:
         assert "PHONE_NUMBER" in result.pii_types
 
     def test_detects_iban_and_email(self, gateway: SovereignGateway) -> None:
-        result = gateway.route([{
-            "role": "user",
-            "content": "Send to jean@bank.fr, IBAN: FR76 3000 6000 0112 3456 7890 189",
-        }])
+        result = gateway.route(
+            [
+                {
+                    "role": "user",
+                    "content": "Send to jean@bank.fr, IBAN: FR76 3000 6000 0112 3456 7890 189",
+                }
+            ]
+        )
 
         assert result.pii_detected is True
         assert "EMAIL_ADDRESS" in result.pii_types
@@ -123,9 +135,11 @@ class TestMessageNormalization:
 
     def test_only_scans_user_messages(self, gateway: SovereignGateway) -> None:
         """System/assistant messages should not trigger PII routing."""
-        result = gateway.route([
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": "What is 2+2?"},
-            {"role": "assistant", "content": "The answer is 4."},
-        ])
+        result = gateway.route(
+            [
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": "What is 2+2?"},
+                {"role": "assistant", "content": "The answer is 4."},
+            ]
+        )
         assert result.pii_detected is False

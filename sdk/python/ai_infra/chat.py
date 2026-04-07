@@ -95,6 +95,7 @@ class ChatCompletions:
                 pii_found = detect_pii(msg["content"])
                 if pii_found:
                     import warnings
+
                     warnings.warn(
                         f"PII detected client-side: {pii_found}. "
                         f"Server will route to EU providers for RGPD compliance.",
@@ -238,7 +239,8 @@ class ChatCompletions:
         except httpx.ConnectError as e:
             cb.record_failure()
             raise SDKConnectionError(
-                str(e), request_id=body.get("request_id"),
+                str(e),
+                request_id=body.get("request_id"),
             ) from None
 
         if response.status_code != 200:
@@ -277,9 +279,7 @@ class ChatCompletions:
                 latency_ms=latency_ms,
                 status_code=status_code,
                 is_stream=False,
-                is_cache_hit=(
-                    result.savings.source == "cache" if result else False
-                ),
+                is_cache_hit=(result.savings.source == "cache" if result else False),
                 cost_usd=result.savings.cost_usd if result else 0.0,
                 savings_usd=result.savings.cost_saved_usd if result else 0.0,
             ),

@@ -14,6 +14,7 @@ from pydantic import BaseModel, Field
 
 # ── Enums ─────────────────────────────────────────────────────────
 
+
 class RoutingMode(str, Enum):
     """Available routing optimization modes."""
 
@@ -34,6 +35,7 @@ class RouteSource(str, Enum):
 
 # ── Usage ─────────────────────────────────────────────────────────
 
+
 class Usage(BaseModel):
     """Token usage statistics."""
 
@@ -43,6 +45,7 @@ class Usage(BaseModel):
 
 
 # ── Savings (platform-specific extension) ─────────────────────────
+
 
 class Savings(BaseModel):
     """Cost and sovereignty information attached to each response.
@@ -65,14 +68,17 @@ class Savings(BaseModel):
     rgpd_compliant: bool = Field(True, description="Whether routing was RGPD-compliant")
     eu_routing: bool = Field(False, description="Whether EU-only routing was used")
     forced_eu_routing: bool = Field(
-        False, description="Whether EU routing was forced due to PII detection",
+        False,
+        description="Whether EU routing was forced due to PII detection",
     )
     pii_types_detected: list[str] = Field(
-        default_factory=list, description="PII types detected server-side",
+        default_factory=list,
+        description="PII types detected server-side",
     )
 
 
 # ── Chat completion (non-streaming) ───────────────────────────────
+
 
 class Choice(BaseModel):
     """A single completion choice."""
@@ -156,6 +162,7 @@ class ChatCompletion(BaseModel):
 
 # ── Streaming chunks ─────────────────────────────────────────────
 
+
 class DeltaContent(BaseModel):
     """Delta content within a streaming chunk."""
 
@@ -215,6 +222,7 @@ class ChatCompletionChunk(BaseModel):
 
 
 # ── Model listing ─────────────────────────────────────────────────
+
 
 class ModelInfo(BaseModel):
     """Information about a single available model."""

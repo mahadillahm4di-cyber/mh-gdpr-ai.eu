@@ -188,11 +188,13 @@ class TestChatCompletionChunk:
             "object": "chat.completion.chunk",
             "created": 1700000000,
             "model": "mistral-7b",
-            "choices": [{
-                "index": 0,
-                "delta": {"role": "assistant", "content": "Hello"},
-                "finish_reason": None,
-            }],
+            "choices": [
+                {
+                    "index": 0,
+                    "delta": {"role": "assistant", "content": "Hello"},
+                    "finish_reason": None,
+                }
+            ],
         }
         chunk = ChatCompletionChunk.from_sse_data(data)
         assert chunk.id == "chatcmpl-abc"
@@ -207,11 +209,13 @@ class TestChatCompletionChunk:
             "object": "chat.completion.chunk",
             "created": 1700000000,
             "model": "mistral-7b",
-            "choices": [{
-                "index": 0,
-                "delta": {"content": " world"},
-                "finish_reason": None,
-            }],
+            "choices": [
+                {
+                    "index": 0,
+                    "delta": {"content": " world"},
+                    "finish_reason": None,
+                }
+            ],
         }
         chunk = ChatCompletionChunk.from_sse_data(data)
         assert chunk.choices[0].delta.role is None
@@ -223,11 +227,13 @@ class TestChatCompletionChunk:
             "object": "chat.completion.chunk",
             "created": 1700000000,
             "model": "mistral-7b",
-            "choices": [{
-                "index": 0,
-                "delta": {},
-                "finish_reason": "stop",
-            }],
+            "choices": [
+                {
+                    "index": 0,
+                    "delta": {},
+                    "finish_reason": "stop",
+                }
+            ],
         }
         chunk = ChatCompletionChunk.from_sse_data(data)
         assert chunk.choices[0].finish_reason == "stop"

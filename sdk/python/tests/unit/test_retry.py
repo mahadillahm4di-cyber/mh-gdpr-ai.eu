@@ -69,21 +69,27 @@ class TestIsRetryableStatus:
 
 
 class TestIsRetryableException:
-    @pytest.mark.parametrize("exc", [
-        SDKConnectionError(),
-        SDKTimeoutError(),
-        RateLimitError(),
-        NoProviderAvailableError(),
-    ])
+    @pytest.mark.parametrize(
+        "exc",
+        [
+            SDKConnectionError(),
+            SDKTimeoutError(),
+            RateLimitError(),
+            NoProviderAvailableError(),
+        ],
+    )
     def test_retryable_exceptions(self, exc: Exception) -> None:
         assert is_retryable_exception(exc) is True
 
-    @pytest.mark.parametrize("exc", [
-        AuthenticationError(),
-        BudgetExceededError(),
-        ValidationError("bad"),
-        SecurityBlockedError(),
-    ])
+    @pytest.mark.parametrize(
+        "exc",
+        [
+            AuthenticationError(),
+            BudgetExceededError(),
+            ValidationError("bad"),
+            SecurityBlockedError(),
+        ],
+    )
     def test_non_retryable_exceptions(self, exc: Exception) -> None:
         assert is_retryable_exception(exc) is False
 
@@ -119,10 +125,12 @@ class TestCircuitBreaker:
         assert cb.state == CircuitBreaker.CLOSED
 
     def test_transitions_to_half_open(self) -> None:
-        cb = CircuitBreaker(CircuitBreakerConfig(
-            failure_threshold=2,
-            recovery_timeout=0.01,
-        ))
+        cb = CircuitBreaker(
+            CircuitBreakerConfig(
+                failure_threshold=2,
+                recovery_timeout=0.01,
+            )
+        )
         cb.record_failure()
         cb.record_failure()
         assert cb.state == CircuitBreaker.OPEN
@@ -132,11 +140,13 @@ class TestCircuitBreaker:
         assert cb.allow_request() is True
 
     def test_half_open_success_closes(self) -> None:
-        cb = CircuitBreaker(CircuitBreakerConfig(
-            failure_threshold=2,
-            recovery_timeout=0.01,
-            success_threshold=2,
-        ))
+        cb = CircuitBreaker(
+            CircuitBreakerConfig(
+                failure_threshold=2,
+                recovery_timeout=0.01,
+                success_threshold=2,
+            )
+        )
         cb.record_failure()
         cb.record_failure()
         time.sleep(0.02)
@@ -147,10 +157,12 @@ class TestCircuitBreaker:
         assert cb.state == CircuitBreaker.CLOSED
 
     def test_half_open_failure_reopens(self) -> None:
-        cb = CircuitBreaker(CircuitBreakerConfig(
-            failure_threshold=2,
-            recovery_timeout=0.01,
-        ))
+        cb = CircuitBreaker(
+            CircuitBreakerConfig(
+                failure_threshold=2,
+                recovery_timeout=0.01,
+            )
+        )
         cb.record_failure()
         cb.record_failure()
         time.sleep(0.02)

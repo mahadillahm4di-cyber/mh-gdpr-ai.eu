@@ -50,8 +50,13 @@ _PII_PATTERNS: dict[str, re.Pattern[str]] = {
 
 # Process specific patterns before generic ones to avoid false matches
 _PATTERN_ORDER: list[str] = [
-    "EMAIL_ADDRESS", "IBAN_CODE", "CREDIT_CARD", "US_SSN",
-    "FR_NIR", "IP_ADDRESS", "PHONE_NUMBER",
+    "EMAIL_ADDRESS",
+    "IBAN_CODE",
+    "CREDIT_CARD",
+    "US_SSN",
+    "FR_NIR",
+    "IP_ADDRESS",
+    "PHONE_NUMBER",
 ]
 
 # Extended Presidio entity types for GDPR compliance
@@ -245,13 +250,15 @@ class PIIDetector:
             )
             entities = []
             for r in results:
-                entities.append(PIIEntity(
-                    entity_type=r.entity_type,
-                    start=r.start,
-                    end=r.end,
-                    score=round(r.score, 3),
-                    source="presidio",
-                ))
+                entities.append(
+                    PIIEntity(
+                        entity_type=r.entity_type,
+                        start=r.start,
+                        end=r.end,
+                        score=round(r.score, 3),
+                        source="presidio",
+                    )
+                )
                 if r.score < 0.7:
                     self._log.debug(
                         "pii_low_confidence",
@@ -272,12 +279,14 @@ class PIIDetector:
             if pattern is None:
                 continue
             for match in pattern.finditer(text):
-                entities.append(PIIEntity(
-                    entity_type=pii_type,
-                    start=match.start(),
-                    end=match.end(),
-                    score=1.0,
-                    source="regex",
-                ))
+                entities.append(
+                    PIIEntity(
+                        entity_type=pii_type,
+                        start=match.start(),
+                        end=match.end(),
+                        score=1.0,
+                        source="regex",
+                    )
+                )
 
         return entities

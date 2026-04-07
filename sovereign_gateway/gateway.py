@@ -174,10 +174,12 @@ class SovereignGateway:
             if isinstance(msg, Message):
                 normalized.append(msg)
             else:
-                normalized.append(Message(
-                    role=msg.get("role", "user"),
-                    content=msg.get("content", ""),
-                ))
+                normalized.append(
+                    Message(
+                        role=msg.get("role", "user"),
+                        content=msg.get("content", ""),
+                    )
+                )
 
         model_hint: SupportedModel | None = None
         if model is not None:
@@ -274,8 +276,13 @@ class SovereignGateway:
 
         eu_providers = {"scaleway", "ovhcloud"}
         priorities = {
-            "scaleway": 1, "ovhcloud": 2, "runpod": 3,
-            "lambda_labs": 4, "together_ai": 5, "openai": 6, "litellm": 7,
+            "scaleway": 1,
+            "ovhcloud": 2,
+            "runpod": 3,
+            "lambda_labs": 4,
+            "together_ai": 5,
+            "openai": 6,
+            "litellm": 7,
         }
 
         configs: dict[str, ProviderConfig] = {}

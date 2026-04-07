@@ -58,4 +58,4 @@ print("Quick PII Check")
 print("=" * 60)
 
 print(f"  Has PII: {detector.has_pii('Email: test@company.com')}")  # True
-print(f"  Has PII: {detector.has_pii('Hello, how are you?')}")       # False
+print(f"  Has PII: {detector.has_pii('Hello, how are you?')}")  # False

@@ -68,7 +68,7 @@ def compute_delay(attempt: int, config: RetryConfig) -> float:
     Returns:
         Delay in seconds before the next attempt.
     """
-    delay = min(config.base_delay * (2 ** attempt), config.max_delay)
+    delay = min(config.base_delay * (2**attempt), config.max_delay)
     jitter = random.uniform(0, config.jitter)  # noqa: S311
     return delay + jitter
 
@@ -114,6 +114,7 @@ def is_retryable_exception(exc: Exception) -> bool:
 
 
 # ── Circuit Breaker ───────────────────────────────────────────────
+
 
 @dataclass
 class CircuitBreakerConfig:

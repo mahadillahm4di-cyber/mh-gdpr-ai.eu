@@ -95,18 +95,21 @@ class TestSpecificExceptions:
 
 
 class TestInheritance:
-    @pytest.mark.parametrize("exc_cls,kwargs", [
-        (AuthenticationError, {}),
-        (SDKPermissionError, {}),
-        (RateLimitError, {}),
-        (BudgetExceededError, {}),
-        (ProviderError, {}),
-        (NoProviderAvailableError, {}),
-        (ValidationError, {"message": "bad"}),
-        (SecurityBlockedError, {}),
-        (SDKConnectionError, {}),
-        (SDKTimeoutError, {}),
-    ])
+    @pytest.mark.parametrize(
+        "exc_cls,kwargs",
+        [
+            (AuthenticationError, {}),
+            (SDKPermissionError, {}),
+            (RateLimitError, {}),
+            (BudgetExceededError, {}),
+            (ProviderError, {}),
+            (NoProviderAvailableError, {}),
+            (ValidationError, {"message": "bad"}),
+            (SecurityBlockedError, {}),
+            (SDKConnectionError, {}),
+            (SDKTimeoutError, {}),
+        ],
+    )
     def test_all_inherit_from_base(self, exc_cls: type, kwargs: dict) -> None:
         exc = exc_cls(**kwargs)
         assert isinstance(exc, AIInfraError)
@@ -117,14 +120,17 @@ class TestInheritance:
 
 
 class TestFromStatusCode:
-    @pytest.mark.parametrize("code,expected_cls", [
-        (401, AuthenticationError),
-        (402, BudgetExceededError),
-        (403, SecurityBlockedError),
-        (429, RateLimitError),
-        (502, ProviderError),
-        (503, NoProviderAvailableError),
-    ])
+    @pytest.mark.parametrize(
+        "code,expected_cls",
+        [
+            (401, AuthenticationError),
+            (402, BudgetExceededError),
+            (403, SecurityBlockedError),
+            (429, RateLimitError),
+            (502, ProviderError),
+            (503, NoProviderAvailableError),
+        ],
+    )
     def test_maps_status_codes(self, code: int, expected_cls: type) -> None:
         exc = from_status_code(code, "error body", request_id="req-1")
         assert isinstance(exc, expected_cls)

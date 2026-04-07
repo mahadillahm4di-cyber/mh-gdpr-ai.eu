@@ -34,11 +34,11 @@ client = Client()  # Reads AI_INFRA_API_KEY from environment
 
 # Exact same API call — no changes needed
 response = client.chat.completions.create(
-    model="gpt-4o",           # Same model names work
+    model="gpt-4o",  # Same model names work
     messages=[{"role": "user", "content": "Hello!"}],
-    max_tokens=256,           # Same parameters
-    temperature=0.7,          # Same parameters
-    stream=False,             # Same parameters
+    max_tokens=256,  # Same parameters
+    temperature=0.7,  # Same parameters
+    stream=False,  # Same parameters
 )
 
 # Same response structure

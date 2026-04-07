@@ -14,15 +14,17 @@ def main() -> None:
     print("  GDPR-compliant LLM routing with PII detection")
     print()
     print("  Try it:")
-    print('    from sovereign_gateway import SovereignGateway')
-    print('    gw = SovereignGateway()')
+    print("    from sovereign_gateway import SovereignGateway")
+    print("    gw = SovereignGateway()")
     print('    result = gw.route([{"role": "user", "content": "test@email.com"}])')
     print()
 
     # Quick self-test
-    result = gateway.route([
-        {"role": "user", "content": "Hello, my email is jean@company.fr"},
-    ])
+    result = gateway.route(
+        [
+            {"role": "user", "content": "Hello, my email is jean@company.fr"},
+        ]
+    )
     print(f"  Self-test: PII detected={result.pii_detected}, EU forced={result.forced_eu_routing}")
     print("  Status: OK")
     print()

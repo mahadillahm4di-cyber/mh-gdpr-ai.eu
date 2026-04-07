@@ -19,6 +19,7 @@ TEST_BASE_URL = "https://api.test.ai-infra.io"
 
 # ── Factories ─────────────────────────────────────────────────────
 
+
 def make_api_response(
     content: str = "Hello from AI Infrastructure!",
     model: str = "mistral-7b",
@@ -58,12 +59,14 @@ def make_sse_stream(
     provider: str = "scaleway",
 ) -> str:
     """Build a mock SSE stream string."""
-    metadata = json.dumps({
-        "request_id": "test-req-stream",
-        "model": model,
-        "provider": provider,
-        "estimated_cost_usd": 0.002,
-    })
+    metadata = json.dumps(
+        {
+            "request_id": "test-req-stream",
+            "model": model,
+            "provider": provider,
+            "estimated_cost_usd": 0.002,
+        }
+    )
 
     lines = [f": {metadata}"]
 
@@ -76,11 +79,13 @@ def make_sse_stream(
             "object": "chat.completion.chunk",
             "created": 1700000000,
             "model": model,
-            "choices": [{
-                "index": 0,
-                "delta": {"content": text} if i > 0 else {"role": "assistant", "content": text},
-                "finish_reason": None,
-            }],
+            "choices": [
+                {
+                    "index": 0,
+                    "delta": {"content": text} if i > 0 else {"role": "assistant", "content": text},
+                    "finish_reason": None,
+                }
+            ],
         }
         lines.append(f"data: {json.dumps(chunk_data)}")
 
@@ -90,11 +95,13 @@ def make_sse_stream(
         "object": "chat.completion.chunk",
         "created": 1700000000,
         "model": model,
-        "choices": [{
-            "index": 0,
-            "delta": {},
-            "finish_reason": "stop",
-        }],
+        "choices": [
+            {
+                "index": 0,
+                "delta": {},
+                "finish_reason": "stop",
+            }
+        ],
     }
     lines.append(f"data: {json.dumps(final)}")
     lines.append("data: [DONE]")
@@ -103,6 +110,7 @@ def make_sse_stream(
 
 
 # ── Fixtures ──────────────────────────────────────────────────────
+
 
 @pytest.fixture()
 def api_key() -> str:

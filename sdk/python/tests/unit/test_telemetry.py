@@ -42,10 +42,15 @@ class TestTelemetryCollector:
 
     def test_records_success(self) -> None:
         t = TelemetryCollector(enabled=True)
-        t.record(RequestMetrics(
-            model="mistral-7b", latency_ms=150, status_code=200,
-            cost_usd=0.001, savings_usd=0.002,
-        ))
+        t.record(
+            RequestMetrics(
+                model="mistral-7b",
+                latency_ms=150,
+                status_code=200,
+                cost_usd=0.001,
+                savings_usd=0.002,
+            )
+        )
         stats = t.get_stats()
         assert stats["total_requests"] == 1
         assert stats["total_errors"] == 0
@@ -55,36 +60,54 @@ class TestTelemetryCollector:
 
     def test_records_errors(self) -> None:
         t = TelemetryCollector(enabled=True)
-        t.record(RequestMetrics(
-            model="m", latency_ms=100, status_code=500,
-        ))
+        t.record(
+            RequestMetrics(
+                model="m",
+                latency_ms=100,
+                status_code=500,
+            )
+        )
         stats = t.get_stats()
         assert stats["total_errors"] == 1
         assert stats["error_rate"] == 1.0
 
     def test_records_cache_hits(self) -> None:
         t = TelemetryCollector(enabled=True)
-        t.record(RequestMetrics(
-            model="m", latency_ms=10, status_code=200, is_cache_hit=True,
-        ))
+        t.record(
+            RequestMetrics(
+                model="m",
+                latency_ms=10,
+                status_code=200,
+                is_cache_hit=True,
+            )
+        )
         stats = t.get_stats()
         assert stats["cache_hit_rate"] == 1.0
 
     def test_records_streams(self) -> None:
         t = TelemetryCollector(enabled=True)
-        t.record(RequestMetrics(
-            model="m", latency_ms=200, status_code=200, is_stream=True,
-        ))
+        t.record(
+            RequestMetrics(
+                model="m",
+                latency_ms=200,
+                status_code=200,
+                is_stream=True,
+            )
+        )
         stats = t.get_stats()
         assert stats["stream_rate"] == 1.0
 
     def test_aggregate_multiple(self) -> None:
         t = TelemetryCollector(enabled=True)
         for i in range(5):
-            t.record(RequestMetrics(
-                model="m", latency_ms=100.0 * (i + 1), status_code=200,
-                cost_usd=0.001,
-            ))
+            t.record(
+                RequestMetrics(
+                    model="m",
+                    latency_ms=100.0 * (i + 1),
+                    status_code=200,
+                    cost_usd=0.001,
+                )
+            )
         stats = t.get_stats()
         assert stats["total_requests"] == 5
         assert stats["avg_latency_ms"] == 300.0  # (100+200+300+400+500)/5

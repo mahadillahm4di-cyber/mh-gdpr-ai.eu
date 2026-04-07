@@ -48,9 +48,7 @@ def gateway_with_providers():
 class TestCompleteEndToEnd:
     """Test the complete() method — PII detection + routing + LLM call."""
 
-    def test_pii_routes_to_eu_provider(
-        self, gateway_with_providers, mock_provider_response
-    ):
+    def test_pii_routes_to_eu_provider(self, gateway_with_providers, mock_provider_response):
         with patch.object(
             gateway_with_providers._client, "call", return_value=mock_provider_response
         ) as mock_call:
@@ -71,9 +69,7 @@ class TestCompleteEndToEnd:
         assert call_args.kwargs["config"].name == "scaleway"
         assert call_args.kwargs["config"].is_eu is True
 
-    def test_no_pii_routes_to_cheapest(
-        self, gateway_with_providers, mock_provider_response
-    ):
+    def test_no_pii_routes_to_cheapest(self, gateway_with_providers, mock_provider_response):
         with patch.object(
             gateway_with_providers._client, "call", return_value=mock_provider_response
         ) as mock_call:
@@ -86,9 +82,7 @@ class TestCompleteEndToEnd:
         assert result.content == "Hello! How can I help you today?"
         mock_call.assert_called_once()
 
-    def test_compliance_summary_available(
-        self, gateway_with_providers, mock_provider_response
-    ):
+    def test_compliance_summary_available(self, gateway_with_providers, mock_provider_response):
         with patch.object(
             gateway_with_providers._client, "call", return_value=mock_provider_response
         ):
@@ -103,15 +97,11 @@ class TestCompleteEndToEnd:
         assert summary["routing_decision"] == "eu_only"
         assert summary["provider_region"] == "EU"
 
-    def test_latency_tracked(
-        self, gateway_with_providers, mock_provider_response
-    ):
+    def test_latency_tracked(self, gateway_with_providers, mock_provider_response):
         with patch.object(
             gateway_with_providers._client, "call", return_value=mock_provider_response
         ):
-            result = gateway_with_providers.complete(
-                [{"role": "user", "content": "Hello world"}]
-            )
+            result = gateway_with_providers.complete([{"role": "user", "content": "Hello world"}])
 
         assert result.latency_ms > 0
 
@@ -130,9 +120,7 @@ class TestCompleteErrors:
             providers={"together_ai": {"api_key": "tok-xxx"}},
         )
         with pytest.raises(RuntimeError, match="no EU provider configured"):
-            gateway.complete(
-                [{"role": "user", "content": "Email jean@bnp.fr"}]
-            )
+            gateway.complete([{"role": "user", "content": "Email jean@bnp.fr"}])
 
 
 class TestProviderSelection:

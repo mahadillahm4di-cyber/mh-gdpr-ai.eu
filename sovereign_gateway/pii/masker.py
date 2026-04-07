@@ -48,8 +48,13 @@ _PII_PATTERNS: dict[str, re.Pattern[str]] = {
 }
 
 _PATTERN_ORDER: list[str] = [
-    "EMAIL_ADDRESS", "IBAN_CODE", "CREDIT_CARD", "US_SSN",
-    "FR_NIR", "IP_ADDRESS", "PHONE_NUMBER",
+    "EMAIL_ADDRESS",
+    "IBAN_CODE",
+    "CREDIT_CARD",
+    "US_SSN",
+    "FR_NIR",
+    "IP_ADDRESS",
+    "PHONE_NUMBER",
 ]
 
 _MASKS: dict[str, str] = {
@@ -145,10 +150,12 @@ class PIIMasker:
             content = msg.get("content", "")
             masked_content, types = self.mask(content)
             all_types.extend(types)
-            masked.append({
-                "role": msg.get("role", "user"),
-                "content": masked_content,
-            })
+            masked.append(
+                {
+                    "role": msg.get("role", "user"),
+                    "content": masked_content,
+                }
+            )
 
         # Deduplicate while preserving order
         seen: set[str] = set()
