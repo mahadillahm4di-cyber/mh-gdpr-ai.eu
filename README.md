@@ -77,7 +77,9 @@ Your EU User  -->  Your App  -->  Sovereign Gateway  -->  PII detected?
 pip install mh-gdpr-ai
 ```
 
-### 3 Lines — PII Detection + Routing Decision
+### What works without any API key (instant)
+
+PII detection, routing decisions, and masking all work **immediately** after install — no account, no API key, no signup needed.
 
 ```python
 from sovereign_gateway import SovereignGateway
@@ -87,43 +89,50 @@ result = gateway.route([{"role": "user", "content": "Analyze the account of jean
 
 print(result.pii_detected)       # True
 print(result.pii_types)          # ['EMAIL_ADDRESS']
-print(result.forced_eu_routing)  # True
+print(result.forced_eu_routing)  # True — this request MUST stay in EU
 print(result.gdpr_compliant)     # True
 ```
 
-### End-to-End — PII Detection + Routing + LLM Call
+### What requires a provider API key
 
-Add your provider API key and the gateway calls the LLM for you:
+`gateway.complete()` calls a real LLM, so it needs an API key from at least one provider.
+
+**Fastest way to test (free):** create a [Together AI](https://api.together.xyz/) account — you get **$5 free credits**, no credit card needed.
 
 ```python
 from sovereign_gateway import SovereignGateway
 
-# Configure with your provider(s)
+# Option 1: pass key directly
 gateway = SovereignGateway(providers={
-    "scaleway": {"api_key": "scw-your-key"},       # EU provider (Paris)
-    "together_ai": {"api_key": "tok-your-key"},     # Non-EU fallback
+    "together_ai": {"api_key": "your-together-ai-key"},
 })
 
-# PII detected -> automatically calls Scaleway (EU only)
+# Option 2: set env variable (TOGETHER_AI_API_KEY) and it's auto-detected
+# export TOGETHER_AI_API_KEY=your-key
+gateway = SovereignGateway()
+
+# Now complete() works — PII scan + routing + actual LLM call
 result = gateway.complete([
     {"role": "user", "content": "Analyze the account of jean.dupont@company.fr"}
 ])
 
 print(result.content)             # Actual LLM response
-print(result.provider_used)       # "scaleway" (EU, because PII detected)
-print(result.forced_eu_routing)   # True
+print(result.provider_used)       # "together_ai" or "scaleway" depending on PII
+print(result.forced_eu_routing)   # True (PII detected → EU only)
 print(result.gdpr_compliant)      # True
-print(result.tokens_used)         # 42
-
-# No PII -> automatically calls cheapest provider
-result = gateway.complete([
-    {"role": "user", "content": "Summarize this quarterly report"}
-])
-print(result.provider_used)       # cheapest available provider
-print(result.forced_eu_routing)   # False
 ```
 
-Works with any OpenAI-compatible provider: Scaleway, OVHcloud, Together AI, OpenAI, Mistral, DeepSeek, Groq, Fireworks.
+**Supported providers** (any OpenAI-compatible endpoint): Scaleway, OVHcloud, Together AI, OpenAI, Mistral, DeepSeek, Groq, Fireworks.
+
+### Summary: what you can do
+
+| Feature | Needs API key? | Method |
+|---------|---------------|--------|
+| Detect PII in text | No | `gateway.route()`, `gateway.detect_pii()`, `gateway.has_pii()` |
+| Get routing decision (EU vs cheapest) | No | `gateway.route()` |
+| Mask PII with placeholders | No | `gateway.mask()`, `gateway.mask_messages()` |
+| Get compliance audit summary | No | `result.compliance_summary` |
+| **Call a real LLM with GDPR routing** | **Yes** | `gateway.complete()` |
 
 ### See It In Action
 
@@ -509,10 +518,11 @@ mh-gdpr-ai.eu/
 │   ├── basic_routing.py
 │   ├── pii_detection.py
 │   └── fastapi_integration.py
-├── tests/                      # Full test suite
+├── tests/                      # 63 tests
 │   ├── test_pii_detector.py
 │   ├── test_masker.py
-│   └── test_sovereign_router.py
+│   ├── test_sovereign_router.py
+│   └── test_complete.py        # End-to-end + provider tests
 ├── pyproject.toml              # Package config
 ├── Dockerfile                  # Production container
 └── Makefile                    # Dev commands
