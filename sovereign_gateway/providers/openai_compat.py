@@ -148,7 +148,8 @@ class OpenAICompatClient:
                 },
             )
             response.raise_for_status()
-            return response.json()
+            result: dict[str, Any] = response.json()
+            return result
 
 
 def load_providers_from_env() -> dict[str, ProviderConfig]:
