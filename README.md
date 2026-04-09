@@ -31,7 +31,7 @@ GDPR-compliant LLM routing with real-time PII detection. Your AI calls cross the
 
 <br>
 
-[Overview](#overview) · [MVP Demo](#mvp-demo-local) · [How it Works](#workflow) · [Quick Start](#quick-start) · [Features](#features) · [Security](#security) · [Contributing](#contributing)
+[Overview](#overview) · [MVP Demo](#mvp-demo-local) · [Quick Start](#quick-start) · [Features](#features) · [Security](#security) · [Contributing](#contributing)
 
 </div>
 
@@ -95,16 +95,6 @@ Every time you call `openai.chat.completions.create()` with a European user's na
 
 ---
 
-## Workflow
-
-1. **Request Intercept** — Your LLM call is intercepted by the sovereign gateway. The request body and prompt are scanned before anything leaves your infrastructure.
-2. **PII Detection** — Dual-layer scan: Microsoft Presidio (NLP, 15+ entity types) runs first, then regex patterns run as defense in depth. Both layers execute on every request in under 30ms.
-3. **Routing Decision** — PII found? Request is forced to EU-only providers (Scaleway Paris, OVHcloud Gravelines). No PII? Request goes to the cheapest available provider, any region.
-4. **LLM Call** — The request is forwarded to the selected provider. Streaming (SSE) is supported. If the primary provider fails, the fallback chain kicks in automatically.
-5. **Compliance Metadata** — Every response includes an audit-ready compliance summary: PII types detected, provider used, region, whether EU was forced, GDPR compliance status. Ready for your DPO's report.
-
----
-
 ## Quick Start
 
 Requires: **Python 3.10+** and **pip**.
@@ -125,24 +115,7 @@ print(result.forced_eu_routing)  # True — this request MUST stay in EU
 print(result.gdpr_compliant)     # True
 ```
 
-**End-to-end with a real LLM call:**
-
-```python
-gateway = SovereignGateway(providers={
-    "together_ai": {"api_key": "your-together-ai-key"},
-})
-
-result = gateway.complete([
-    {"role": "user", "content": "Analyze the account of jean.dupont@company.fr"}
-])
-
-print(result.content)             # Actual LLM response
-print(result.provider_used)       # "scaleway" (PII detected → EU only)
-print(result.forced_eu_routing)   # True
-print(result.gdpr_compliant)      # True
-```
-
-**Fastest way to test (free):** create a [Together AI](https://api.together.xyz/) account — you get **$5 free credits**, no credit card needed.
+**Want to call a real LLM?** Add a provider API key — see [docs/quickstart.md](docs/quickstart.md) for details.
 
 ---
 
@@ -169,53 +142,6 @@ print(result.gdpr_compliant)      # True
 | Real-time savings dashboard | Coming soon |
 | GDPR compliance report generation (PDF) | Coming soon |
 | Managed service (zero infra for clients) | Coming soon |
-
-## API
-
-All routes under `/v1/` — chat completions, PII detection, routing decisions, masking. Compatible with OpenAI API format. Set providers via environment variables or constructor.
-
-| Method | Description | Returns |
-|--------|-------------|---------|
-| `gateway.complete()` | End-to-end: PII scan + routing + LLM call | `CompletionResult` |
-| `gateway.route()` | PII scan + routing decision (no LLM call) | `RouteResult` |
-| `gateway.detect_pii()` | Detect PII types in text | `list[str]` |
-| `gateway.has_pii()` | Quick boolean PII check | `bool` |
-| `gateway.mask()` | Mask PII in text | `str` |
-| `gateway.mask_messages()` | Mask PII across messages | `list[dict]` |
-
-## Supported Models
-
-| Family | Models | EU Safe |
-|--------|--------|---------|
-| **Mistral** | mistral-7b, mixtral-8x7b, codestral, mistral-large, mistral-embed | Yes |
-| **Meta/Llama** | llama-3-70b, llama-3-8b, codellama-34b | Yes |
-| **Google** | gemma-7b, gemini-pro | Partial |
-| **OpenAI** | gpt-4o, gpt-4-turbo, gpt-3.5-turbo | No |
-| **Anthropic** | claude-3-opus, claude-3-sonnet, claude-3-haiku | No |
-| **Cohere** | command-r-plus, command-r | No |
-| **DeepSeek** | deepseek-v2, deepseek-coder | No |
-| **Alibaba** | qwen2-72b, qwen2-7b | No |
-| **Microsoft** | phi-3-medium, phi-3-mini | No |
-
-## Platform Architecture
-
-This open-source library is the core of a **fully managed AI infrastructure platform**. The managed service adds enterprise features on top.
-
-| Component | Open Source (this repo) | Managed Service (coming soon) |
-|-----------|------------------------|-------------------------------|
-| PII Detection | ✅ Presidio + regex, 15+ types | ✅ Same engine |
-| Sovereign Routing | ✅ EU-only when PII found | ✅ Same engine |
-| PII Masking | ✅ Type-specific redaction | ✅ Same engine |
-| SDKs (Python, TypeScript) | ✅ Built, not yet published | ✅ Published on PyPI/npm |
-| API Gateway (Go) | — | ✅ Auth, rate limiting, DDoS |
-| Multi-tenant Auth | — | ✅ JWT, API keys, RBAC |
-| Semantic Cache | — | ✅ Zero-cost cache hits |
-| Billing + Stripe | — | ✅ Pay-per-use, no subscription |
-| Real-Time Dashboard | — | ✅ Cost savings, compliance score |
-| GDPR Reports (PDF) | — | ✅ Auto-generated for DPO |
-| Monitoring | — | ✅ Prometheus, Grafana, Loki |
-
-> **Interested in the managed service?** Join the waitlist or reach out at **mahadillah@mh-gdpr-ai.eu**
 
 ## Security
 
