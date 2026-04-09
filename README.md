@@ -85,13 +85,7 @@ Every time you call `openai.chat.completions.create()` with a European user's na
 </tr>
 </table>
 
-### MVP Demo Video
-
-[![MVP Demo Video](docs/assets/demo-screenshot-1.png)](https://youtube.com)
-
-*Full walkthrough of the local MVP: PII detection on real text, sovereign routing decision, PII masking, compliance metadata generation, and multi-provider LLM calls.*
-
-> Screenshots and video are from the local development environment. The production managed service with real-time dashboard is coming soon at **[mh-gdpr-ai.eu](https://mh-gdpr-ai.eu)**.
+> Screenshots are from the local development environment. The production managed service with real-time dashboard is coming soon at **[mh-gdpr-ai.eu](https://mh-gdpr-ai.eu)**.
 
 ---
 
